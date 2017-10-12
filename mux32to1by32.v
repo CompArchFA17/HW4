@@ -1,5 +1,3 @@
-`include "mux32to1by1.v"
-
 module mux32to1by32
 (
 output[31:0] out,
@@ -13,36 +11,39 @@ input[31:0] input20, input21, input22, input23,
 input[31:0] input24, input25, input26, input27,
 input[31:0] input28, input29, input30, input31
 );
-  mux32to1by1 mux0(out[0], address, input0);
-  mux32to1by1 mux1(out[1], address, input1);
-  mux32to1by1 mux2(out[2], address, input2);
-  mux32to1by1 mux3(out[3], address, input3);
-  mux32to1by1 mux4(out[4], address, input4);
-  mux32to1by1 mux5(out[5], address, input5);
-  mux32to1by1 mux6(out[5], address, input6);
-  mux32to1by1 mux7(out[7], address, input7);
-  mux32to1by1 mux8(out[8], address, input8);
-  mux32to1by1 mux9(out[9], address, input9);
-  mux32to1by1 mux10(out[10], address, input10);
-  mux32to1by1 mux11(out[11], address, input11);
-  mux32to1by1 mux12(out[12], address, input12);
-  mux32to1by1 mux13(out[13], address, input13);
-  mux32to1by1 mux14(out[14], address, input14);
-  mux32to1by1 mux15(out[15], address, input15);
-  mux32to1by1 mux16(out[16], address, input16);
-  mux32to1by1 mux17(out[17], address, input17);
-  mux32to1by1 mux18(out[18], address, input18);
-  mux32to1by1 mux19(out[19], address, input19);
-  mux32to1by1 mux20(out[20], address, input20);
-  mux32to1by1 mux21(out[21], address, input21);
-  mux32to1by1 mux22(out[22], address, input22);
-  mux32to1by1 mux23(out[23], address, input23);
-  mux32to1by1 mux24(out[24], address, input24);
-  mux32to1by1 mux25(out[25], address, input25);
-  mux32to1by1 mux26(out[26], address, input26);
-  mux32to1by1 mux27(out[27], address, input27);
-  mux32to1by1 mux28(out[28], address, input28);
-  mux32to1by1 mux29(out[29], address, input29);
-  mux32to1by1 mux30(out[30], address, input30);
-  mux32to1by1 mux31(out[31], address, input31);
+    wire [31:0] mux[31:0];
+    assign mux[0] = input0;
+    assign mux[1] = input1;
+    assign mux[2] = input2;
+    assign mux[3] = input3;
+    assign mux[4] = input4;
+    assign mux[5] = input5;
+    assign mux[6] = input6;
+    assign mux[7] = input7;
+    assign mux[8] = input8;
+    assign mux[9] = input9;
+    assign mux[10] = input10;
+    assign mux[11] = input11;
+    assign mux[12] = input12;
+    assign mux[13] = input13;
+    assign mux[14] = input14;
+    assign mux[15] = input15;
+    assign mux[16] = input16;
+    assign mux[17] = input17;
+    assign mux[18] = input18;
+    assign mux[19] = input19;
+    assign mux[20] = input20;
+    assign mux[21] = input21;
+    assign mux[22] = input22;
+    assign mux[23] = input23;
+    assign mux[24] = input24;
+    assign mux[25] = input25;
+    assign mux[26] = input26;
+    assign mux[27] = input27;
+    assign mux[28] = input28;
+    assign mux[29] = input29;
+    assign mux[30] = input30;
+    assign mux[31] = input31;
+
+    assign out = mux[address];
 endmodule

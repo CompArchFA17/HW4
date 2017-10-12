@@ -32,7 +32,7 @@ module testRegister32 ();
 
     in = 4'b0000;
     wrenable = 1;
-    clk = 0; #1000 clk=1;
+    #5 clk = 0; #5 clk=1;
     passed_tests = test(out == in);
     // Test ADD
     // $display("ADD:");

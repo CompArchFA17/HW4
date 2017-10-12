@@ -50,6 +50,10 @@ module hw4testbenchharness();
 
   // Test harness asserts 'begintest' for 1000 time steps, starting at time 10
   initial begin
+
+    $dumpfile("regfile.vcd");
+    $dumpvars;
+
     begintest=0;
     #10;
     begintest=1;
