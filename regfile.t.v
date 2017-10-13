@@ -51,8 +51,8 @@ module hw4testbenchharness();
   // Test harness asserts 'begintest' for 1000 time steps, starting at time 10
   initial begin
 
-    $dumpfile("regfile.vcd");
-    $dumpvars;
+    //$dumpfile("regfile.vcd");
+    //$dumpvars;
 
     begintest=0;
     #10;
@@ -62,7 +62,12 @@ module hw4testbenchharness();
 
   // Display test results ('dutpassed' signal) once 'endtest' goes high
   always @(posedge endtest) begin
-    $display("DUT passed?: %b", dutpassed);
+    if (dutpassed) begin
+      $display("Tests Passed!");
+    end
+    else begin
+      $display("Tests Failed!");
+    end
   end
 
 endmodule
@@ -130,18 +135,68 @@ output reg		Clk
   end
 
   // Test Case 2:
-  //   Write '15' to register 2, verify with Read Ports 1 and 2
+  //   Write '15' to register 3, verify with Read Ports 1 and 2
   //   (Fails with example register file, but should pass with yours)
-  WriteRegister = 5'd2;
+  WriteRegister = 5'd3;
   WriteData = 32'd15;
   RegWrite = 1;
-  ReadRegister1 = 5'd2;
-  ReadRegister2 = 5'd2;
+  ReadRegister1 = 5'd3;
+  ReadRegister2 = 5'd3;
   #5 Clk=1; #5 Clk=0;
 
   if((ReadData1 != 15) || (ReadData2 != 15)) begin
     dutpassed = 0;
     $display("Test Case 2 Failed");
+  end
+
+  // Test Case 3:
+  //   Read both registers that we've already set.
+  ReadRegister1 = 5'd2;
+  ReadRegister2 = 5'd3;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 != 42) || (ReadData2 != 15)) begin
+    dutpassed = 0;
+    $display("Test Case 3 Failed");
+  end
+
+  // Test Case 3:
+  //   Clear both registers. Confirm that they are cleared.
+  WriteRegister = 5'd3;
+  WriteData = 32'd0;
+  RegWrite = 1;
+  #5 Clk=1; #5 Clk=0;
+  WriteRegister = 5'd2;
+  WriteData = 32'd0;
+  RegWrite = 1;
+  #5 Clk=1; #5 Clk=0;
+  ReadRegister1 = 5'd2;
+  ReadRegister2 = 5'd3;
+
+  // Test Case 4:
+  //    Set RegWrite to 0. Register should not be written to.
+  WriteRegister = 5'd1;
+  WriteData = 32'd42;
+  RegWrite = 0;
+  #5 Clk=1; #5 Clk=0;
+  ReadRegister1 = 5'd1;
+
+  if(ReadData1 != 42) begin
+    dutpassed = 0;
+    $display("Test Case 4 Failed");
+  end
+
+  // Test Case 5:
+  //    Write to Register 0. Register 0 should always return 0
+  WriteRegister = 5'd0;
+  WriteData = 32'd42;
+  RegWrite = 1;
+  #5 Clk=1; #5 Clk=0;
+  ReadRegister1 = 5'd0;
+
+  if(ReadData1 != 0) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
   end
 
 
