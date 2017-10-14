@@ -37,46 +37,6 @@ endmodule
 This shifts either 1 or 0 to the left by n bits, effectively setting the nth bit high.
  
 
-### Deliverable 7 ###
-Submit Verilog files that containing your register file and all supporting modules.  Note that Deliverable 8 will help you with this. 
-
-### Deliverable 8 ###
-Expand the provided test bench to catch register files with the following error types:
-
-1. A fully perfect register file.  Return True when this is detected, false for all others.
-1. Write Enable is broken / ignored – Register is always written to.
-1. Decoder is broken – All registers are written to.
-1. Register Zero is actually a register instead of the constant value zero.
-1. Port 2 is broken and always reads register 14 (for example).
-
-These will be graded by instantiating intentionally broken register files with your tester.  Your tester must return true (works!) or false (broken!) as appropriate.
-
-It is to your advantage to test more than just these cases to better ensure that your good register file is actually good.
-
 ## Submission ##
 
-Push your work to GitHub and submit a pull request to the course repo. You should include:
- - Verilog: top-level `regfile.v` and any supporting files
- - Test benches: `regfile.t.v` and any other testing files
- - Scripts to run your tests
- - "Report" with writing/drawing for deliverables 1 and 6
- 
-You can choose how to organize your Verilog modules (e.g. one module per file matching filename, all sizes of decoder grouped in `decoders.v`, something else) and testbenches, but the top-level of each must be named `regfile.v` and `regfile.t.v` as specified.
-
-## Rubric ##
-Code portions of this assignment will be checked automatically by scripts.  It is therefore critical to follow the module definitions exactly – same port definitions, same names.
-
-| Deliverable |	Weight | Grading |
-|-------------|--------|---------|
-| 1 |	10	| Manual |
-| 2	| 5	| Automatic |
-| 3	| 5	| Automatic |
-| 4	| 10	| Automatic |
-| 5	| 10	| Automatic |
-| 6	| 10	| Manual |
-| 7	| 25	| Automatic |
-| 8	| 25	| Automatic |
-|  Total |	100	| |
-
-## Notes ##
-We are not doing any time delay related analysis for this assignment.  Please do not include time delays.
+All tests are contained in regfile.t.v
