@@ -1,24 +1,9 @@
 # CompArch HW b0100: Register File #
 
-**Due:** Monday, October 16
+### Jonah Spear
 
-This homework is intended to introduce behavioral Verilog and practice test bench design. You will create your first memory, a register file, which will be reused in your CPU design.
-
-Homework is to be completed individually.  If you seek help from another individual, note that per deliverable.
-
-
-## The Register File ##
-The register file is an extremely small, extremely fast memory at the heart of your CPU.  They vary per architecture, but you will create one with the following specifications:
-
- - Width: 32 bits
- - Depth: 32 words
- - Write Port: Synchronous, Positive Edge Triggered
- - Read Port 1: Asynchronous
- - Read Port 2: Asynchronous
+The purpose of this assignment is to build a 32 bit register in verilog. A 32 bit register is a type of memory that can hold 32 values of 32 bits each. The overall design of the register is as follows:
  
-We are mimicking the MIPS architecture, which has one unusual feature in its register file:  The first "register" is actually just the constant value zero.  We will exploit this oddity later when we write assembly programs for the processor.
-
-The overall structure of the register file is shown below.  The core is the 32-bit registers: 31 normal registers and a constant zero.  The read ports are a pair of giant multiplexers connected to the register outputs.  The write port connects to the input of all registers, and a decoder optionally enables one register to be written.  This homework will build these units incrementally in behavioral Verilog (wrapped in structural shells), and then assemble them to create the full register file.
  
 <img src="https://e38023e2-a-62cb3a1a-s-sites.googlegroups.com/site/ca15fall/resources/regfile.png?attachauth=ANoY7coxaffMnfwuftWJOBUSY8OdyOcpfSRp2MJMGS76O8AVIidsNCLx2synldoGKALHHXlA4n5YorYntr0jQ-oBuUX0N1rVOQOnK8ZmJ25513iH3ek-2tkEb28NN1C9iUZRQVvt4zpwB1txBKiNLXSDQ8Rb2GYo5VZNyvINrXv4SBmqHK5VPNngT5WzEyJapUDCQPcL86zR-MMyb1fKthgwZ8Q-6Y8JUg%3D%3D&attredirects=0" alt="Register File diagram">
  
