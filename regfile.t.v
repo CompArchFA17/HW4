@@ -116,6 +116,29 @@ output reg		Clk
     end
   endfunction
 
+  task run_test;
+    input expected_val_1, expected_val_2;
+    integer expected_val_1, expected_val_2;
+    integer i;
+    begin
+      Clk=0; #5 Clk=1; #5 Clk=0;
+      dutpassed = test((ReadData1 == expected_val_1) & (ReadData2 == expected_val_2));
+
+      // Reset all values to their default
+      #5 Clk=1; #5 Clk=0;
+      RegWrite=1;
+      WriteData=0;
+      for (i=0; i<31; i=i+1) begin
+        WriteRegister = i;
+        #5 Clk=1; #5 Clk=0;
+      end
+      RegWrite=0;
+      WriteRegister=0;
+      ReadRegister1=0;
+      ReadRegister2=0;
+    end
+  endtask
+
   // Initialize register driver signals
   initial begin
     WriteData=32'd0;
@@ -132,6 +155,10 @@ output reg		Clk
     dutpassed = 1;
     #10
 
+  // Test Case 0:
+  //   Before anything is set, both read values should be 0
+  run_test(0, 0);
+
   // Test Case 1:
   //   Write '42' to register 2, verify with Read Ports 1 and 2
   //   (Passes because example register file is hardwired to return 42)
@@ -140,10 +167,9 @@ output reg		Clk
   RegWrite = 1;
   ReadRegister1 = 5'd2;
   ReadRegister2 = 5'd2;
-  #5 Clk=1; #5 Clk=0;	// Generate single clock pulse
 
   // Verify expectations and report test result
-  dutpassed = test((ReadData1 == 42) & (ReadData2 == 42));
+  run_test(42, 42);
 
   // Test Case 2:
   //   Write '15' to register 3, verify with Read Ports 1 and 2
@@ -153,36 +179,22 @@ output reg		Clk
   RegWrite = 1;
   ReadRegister1 = 5'd3;
   ReadRegister2 = 5'd3;
-  #5 Clk=1; #5 Clk=0;
 
-  if((ReadData1 != 15) || (ReadData2 != 15)) begin
-    dutpassed = 0;
-    $display("Test Case 2 Failed");
-  end
+  run_test(15, 15);
 
   // Test Case 3:
-  //   Read both registers that we've already set.
-  ReadRegister1 = 5'd2;
+  //   Write to two registers, then clear them. Confirm that they are cleared.
+  RegWrite = 1;
+  ReadRegister1 = 5'd3;
   ReadRegister2 = 5'd3;
-  #5 Clk=1; #5 Clk=0;
 
-  if((ReadData1 != 42) || (ReadData2 != 15)) begin
-    dutpassed = 0;
-    $display("Test Case 3 Failed");
-  end
-
-  // Test Case 3:
-  //   Clear both registers. Confirm that they are cleared.
+  // Writing
   WriteRegister = 5'd3;
-  WriteData = 32'd0;
-  RegWrite = 1;
+  WriteData = 32'd15;
   #5 Clk=1; #5 Clk=0;
-  WriteRegister = 5'd2;
-  WriteData = 32'd0;
-  RegWrite = 1;
-  #5 Clk=1; #5 Clk=0;
-  ReadRegister1 = 5'd2;
-  ReadRegister2 = 5'd3;
+  // Clearing
+  WriteData=0;
+  run_test(0, 0);
 
   // Test Case 4:
   //    Set RegWrite to 0. Register should not be written to.
@@ -191,11 +203,9 @@ output reg		Clk
   RegWrite = 0;
   #5 Clk=1; #5 Clk=0;
   ReadRegister1 = 5'd1;
+  ReadRegister2 = 5'd1;
 
-  if(ReadData1 != 42) begin
-    dutpassed = 0;
-    $display("Test Case 4 Failed");
-  end
+  run_test(0, 0);
 
   // Test Case 5:
   //    Write to Register 0. Register 0 should always return 0
@@ -204,11 +214,9 @@ output reg		Clk
   RegWrite = 1;
   #5 Clk=1; #5 Clk=0;
   ReadRegister1 = 5'd0;
+  ReadRegister1 = 5'd0;
 
-  if(ReadData1 != 0) begin
-    dutpassed = 0;
-    $display("Test Case 5 Failed");
-  end
+  run_test(0, 0);
 
 
   // All done!  Wait a moment and signal test completion.
