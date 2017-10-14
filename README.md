@@ -7,95 +7,21 @@ The purpose of this assignment is to build a 32 bit register in verilog. A 32 bi
  
 <img src="https://e38023e2-a-62cb3a1a-s-sites.googlegroups.com/site/ca15fall/resources/regfile.png?attachauth=ANoY7coxaffMnfwuftWJOBUSY8OdyOcpfSRp2MJMGS76O8AVIidsNCLx2synldoGKALHHXlA4n5YorYntr0jQ-oBuUX0N1rVOQOnK8ZmJ25513iH3ek-2tkEb28NN1C9iUZRQVvt4zpwB1txBKiNLXSDQ8Rb2GYo5VZNyvINrXv4SBmqHK5VPNngT5WzEyJapUDCQPcL86zR-MMyb1fKthgwZ8Q-6Y8JUg%3D%3D&attredirects=0" alt="Register File diagram">
  
-## Register ##
-
-It is critically important to write registers in Behavioral Verilog so that the synthesizer can figure out what to do.  
-Here is the behavioral description of a D Flip Flop with enable, positive edge triggered: 
-
-```verilog
-module register
-(
-output reg  q,
-input       d,
-input       wrenable,
-input       clk
-);
-    always @(posedge clk) begin
-        if(wrenable) begin
-            q = d;
-        end
-    end
-endmodule
-```
-
-Note the enable logic.  It may feel more natural to instead “gate the clock” like this:
-
-```verilog
-// Gated clock - avoid this style
-always @(posedge (clk & wrenable)) begin
-	q = d;
-end
-```
 
 Theoretically this would work – the clock signal would be steady `FALSE` when disabled, and only have positive edges when enabled.  However, "gating the clock" is a bad idea in practice – what happens if that enable signal has glitches?  Additionally, FPGAs are typically designed to only support a few distinct clocks.
 
 ### Deliverable 1 ###
-Draw a circuit diagram showing the structural equivalent for each of the two register implementations above. You may use primitives such as the D Flip-Flop, MUX, decoder, and basic logic gates.
 
-### Deliverable 2 ###
-Create a module named `register32`.  This module should exactly match the `register` definition above, but with 32 bits worth of D Flip Flops (`d` and `q` ports should increase width accordingly).  If you’d like, try parameterizing this width.
+Circuit diagram for two register implementations:
+<img src="https://github.com/Joboman555/HW4/blob/master/RegComparison.jpg" alt="Register File diagram">
 
-### Deliverable 3 ###
+### Deliverables 2-5 ###
 
-Create a module named `register32zero`.  This module should match the port definition above, but instead of storing data it should ignore its inputs and always output zero.
+See containing files.
 
+### Deliverable 6 ###
 
-## Behavioral Muxes ##
-
-Behavioral Verilog makes it very easy to create a multiplexer through its array syntax.  This array syntax is very similar to that of the procedural languages (e.g. MATLAB, Python, C, Java, etc) you may already be familiar with:
-
-```verilog
-wire[31:0] inputsofmux;
-wire       outputofmux;
-assign outputofmux=inputsofmux[address];
-```
-
-### Deliverable 4 ###
-Create a 32:1 multiplexer with the following module definition:
-
-```verilog
-module mux32to1by1
-(
-output      out,
-input[4:0]  address,
-input[31:0] inputs
-);
-  // Your code
-endmodule
-```
-
-### Deliverable 5 ###
-
-Create a multiplexer that is 32 bits wide and 32 inputs deep.  There are many syntaxes available to do so, and each of them have their own little bit of excitement.  The version below has more typing involved than other options, but it will allow better flexibility later.  Match the following module port definition:
-
-```verilog
-module mux32to1by32
-(
-output[31:0]  out,
-input[4:0]    address,
-input[31:0]   input0, input1, input2, ..., input31
-);
-
-  wire[31:0] mux[31:0];			// Create a 2D array of wires
-  assign mux[0] = input0;		// Connect the sources of the array
-  // Repeat 31 times...
-  assign out = mux[address];	// Connect the output of the array
-endmodule
-```
-
-## Decoder ##
-
-The decoder selects which register of the register file is being written to.  Here is the full definition:
+Given the following definition for a decoder, describe how this decoder works.
 
 ```verilog
 module decoder1to32
@@ -108,27 +34,8 @@ input[4:0]    address
 endmodule
 ```
 
-### Deliverable 6 ###
-
-Provide a brief written description of how the above module works. How does this behavioral Verilog result in a decoder?
-
-## Stitch it all together ##
-
-You now have all the components necessary to create your register file.  Use the following module definition and structure to create your register file:
-
-```verilog
-module regfile
-(
-output[31:0]  ReadData1,      // Contents of first register read
-output[31:0]  ReadData2,      // Contents of second register read
-input[31:0]   WriteData,      // Contents to write to register
-input[4:0]    ReadRegister1,  // Address of first register to read
-input[4:0]    ReadRegister2,  // Address of second register to read
-input[4:0]    WriteRegister,	// Address of register to write
-input         RegWrite,       // Enable writing of register when High
-input         Clk             // Clock (Positive Edge Triggered)
-);
-```                    
+This shifts either 1 or 0 to the left by n bits, effectively setting the nth bit high.
+ 
 
 ### Deliverable 7 ###
 Submit Verilog files that containing your register file and all supporting modules.  Note that Deliverable 8 will help you with this. 
