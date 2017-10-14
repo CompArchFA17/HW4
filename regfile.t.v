@@ -101,6 +101,20 @@ output reg[4:0]		WriteRegister,
 output reg		RegWrite,
 output reg		Clk
 );
+  function integer test;
+    input test_case;
+    integer test_case;
+    begin
+      if (test_case) begin
+        test = 1;
+      end
+      else begin
+        test = 0;
+        $display("Failed test with: Dw: %h, Rw: %h, Rr1: %h, Rr2: %h, En: %d", WriteData, WriteRegister, ReadRegister1, ReadRegister2, RegWrite);
+        $display("                  Dr1: %h Dr2: %h", ReadData1, ReadData2);
+      end
+    end
+  endfunction
 
   // Initialize register driver signals
   initial begin
@@ -129,10 +143,7 @@ output reg		Clk
   #5 Clk=1; #5 Clk=0;	// Generate single clock pulse
 
   // Verify expectations and report test result
-  if((ReadData1 != 42) || (ReadData2 != 42)) begin
-    dutpassed = 0;	// Set to 'false' on failure
-    $display("Test Case 1 Failed");
-  end
+  dutpassed = test((ReadData1 == 42) & (ReadData2 == 42));
 
   // Test Case 2:
   //   Write '15' to register 3, verify with Read Ports 1 and 2
