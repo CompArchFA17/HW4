@@ -9,6 +9,8 @@ input[4:0]	address
 );
 
     assign out = enable<<address; 
+    //Deliverable 6: the operator << shifts enable by the amount address to the left. If enable is 0, the result
+    // will still be zero no matter the shift. Other wise, the place specified by the address will become 1 in out.
 
 endmodule
 
