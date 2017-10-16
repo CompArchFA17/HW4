@@ -1,0 +1,2 @@
+The module for deliverable 5 is a 32 select multiplexer where each input is also 32 bits.
+This is because each of our registers has 32 bits for the instructions being fed to the CPU.
