@@ -5,10 +5,9 @@
 //   2 asynchronous read ports
 //   1 synchronous, positive edge triggered write port
 //------------------------------------------------------------------------------
-`include "register32.v";
-`include "register32zero.v";
-`include "decoders.v";
-`include "mux32to1by32.v";
+`include "register.v"
+`include "decoders.v"
+`include "mux.v"
 
 module regfile
 (
@@ -24,14 +23,14 @@ input		Clk		// Clock (Positive Edge Triggered)
 
   genvar i;
   wire[31:0] whichWrite;
-  reg [31:0] register[31:0];
+  wire [31:0] register[31:0];
+
+  register32zero setZero(register[0], WriteData, 1, Clk); // Make sure register[0] is always zero
   
   decoder1to32 chooseWrite(whichWrite, RegWrite, WriteRegister);
-  for(i = 0; i < 32; i= i+1) begin
+  for(i = 1; i < 32; i= i+1) begin: write
     register32 writeToReg(register[i], WriteData, whichWrite[i], Clk);
   end
-  
-  register32zero setZero(register[0], WriteData, 1, Clk); // Make sure register[0] is always zero
   
   mux32to1by32 read1(ReadData1, ReadRegister1, register[0],register[1], register[2], register[3], register[4], register[5], register[6], register[7], register[8], register[9], register[10], register[11], register[12], register[13], register[14], register[15], register[16], register[17], register[18], register[19], register[20], register[21], register[22], register[23], register[24], register[25], register[26], register[27], register[28], register[29], register[30],register[31]);
   mux32to1by32 read2(ReadData2, ReadRegister2, register[0],register[1], register[2], register[3], register[4], register[5], register[6], register[7], register[8], register[9], register[10], register[11], register[12], register[13], register[14], register[15], register[16], register[17], register[18], register[19], register[20], register[21], register[22], register[23], register[24], register[25], register[26], register[27], register[28], register[29], register[30],register[31]);
