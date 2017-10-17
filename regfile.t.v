@@ -146,7 +146,8 @@ output reg		Clk
   // All correct functioning test cases
   // Write 145 to given register, verify with read ports 1 and 2
 
-  for (index = 0; index < 32; index = index+1) begin
+  for (index = 1; index < 32; index = index+1) begin
+
   WriteRegister = index[4:0];
   WriteData = 32'd145;
   RegWrite = 1;
@@ -158,6 +159,59 @@ output reg		Clk
     dutpassed = 0;
     $display("Test Case Failed Wrote 145 r:%b Read %d from %b and %d from %b", index[4:0], ReadData1, ReadRegister1, ReadData2, ReadRegister2);
   end
+
+  end
+
+  // Check if Write Enable works
+  // Write 132 to all registers with RegWrite = 0, verify all ports are still 145
+
+  for (index = 1; index < 32; index = index+1) begin
+
+  WriteRegister = index[4:0];
+  WriteData = 32'd132;
+  RegWrite = 0;
+  ReadRegister1 = index[4:0];
+  ReadRegister2 = index[4:0];
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 != 145) || (ReadData2 != 145)) begin
+    dutpassed = 0;
+    $display("Test Case WriteEnable Failed r:%b Read %d from %b and %d from %b", index[4:0], ReadData1, ReadRegister1, ReadData2, ReadRegister2);
+  end
+
+  end
+
+  // Test decoder works and only one register is being written
+  // Write 6983 to address 17, read address 16 and 18 as 145 still
+
+  WriteRegister = 5'd17;
+  WriteData = 32'd299;
+  RegWrite = 1;
+  ReadRegister1 = 5'd16;
+  ReadRegister2 = 5'd18;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 != 145) || (ReadData2 != 145)) begin
+    dutpassed = 0;
+    $display("Test Case decoder Failed Wrote %d to %b and Read %d from %b and %d from %b", WriteData, WriteRegister, ReadData1, ReadRegister1, ReadData2, ReadRegister2);
+  end
+
+
+  // Zero register working test cases
+  // Write 299 to register address zero, read zero from ports 1 and 2
+
+  WriteRegister = 5'b0;
+  WriteData = 32'd299;
+  RegWrite = 1;
+  ReadRegister1 = 5'b0;
+  ReadRegister2 = 5'b0;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 != 0) || (ReadData2 != 0)) begin
+    dutpassed = 0;
+    $display("Test Case zero reg Failed Read %d from %b and %d from %b", ReadData1, ReadRegister1, ReadData2, ReadRegister2);
+  end
+
 
 
   // All done!  Wait a moment and signal test completion.
