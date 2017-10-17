@@ -1,6 +1,8 @@
 // 32-bit D Flip-Flop with enable
 // Positive edge triggered
 
+// This is included in register.v
+
 module register32
 (
 output reg [size-1:0]	q,

@@ -23,12 +23,7 @@ input		RegWrite,	// Enable writing of register when High
 input		Clk		// Clock (Positive Edge Triggered)
 );
 
-  // These two lines are clearly wrong.  They are included to showcase how the 
-  // test harness works. Delete them after you understand the testing process, 
-  // and replace them with your actual code.
-  // assign ReadData1 = 42;
-  // assign ReadData2 = 42;
-
+// create the decoder
 	wire[31:0] decoderout;
 	decoder1to32 decode(decoderout, RegWrite, WriteRegister);
 	
@@ -102,6 +97,7 @@ input		Clk		// Clock (Positive Edge Triggered)
 	register32 	reg31(InForMux31, WriteData, decoderout[31], Clk);
 
 	
+// Use the muxes to get two outputs - ReadData1 and ReadData2
 	mux32to1by32 mux1(ReadData1, ReadRegister1, InForMux0, InForMux1, InForMux2, InForMux3, InForMux4, InForMux5, InForMux6, InForMux7, InForMux8, InForMux9, InForMux10, InForMux11, InForMux12, InForMux13, InForMux14, InForMux15, InForMux16, InForMux17, InForMux18, InForMux19, InForMux20, InForMux21, InForMux22, InForMux23, InForMux24, InForMux25, InForMux26, InForMux27, InForMux28, InForMux29, InForMux30, InForMux31);
 
 	mux32to1by32 mux2(ReadData2, ReadRegister2, InForMux0, InForMux1, InForMux2, InForMux3, InForMux4, InForMux5, InForMux6, InForMux7, InForMux8, InForMux9, InForMux10, InForMux11, InForMux12, InForMux13, InForMux14, InForMux15, InForMux16, InForMux17, InForMux18, InForMux19, InForMux20, InForMux21, InForMux22, InForMux23, InForMux24, InForMux25, InForMux26, InForMux27, InForMux28, InForMux29, InForMux30, InForMux31);

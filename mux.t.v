@@ -1,6 +1,8 @@
 `timescale 1 ns / 1 ps
 `include "mux.v"
 
+
+// This was used to check the functionality of the mux
 module testMultiplexer ();
 
 parameter size = 432;

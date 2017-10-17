@@ -74,15 +74,3 @@ input		clk
 endmodule
 
 
-
-
-
-
-
-
-
-
-
-
-
-

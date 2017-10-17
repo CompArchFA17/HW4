@@ -68,7 +68,7 @@ input[31:0]    input31
 	assign mux[14] = input14;		
 	assign mux[15] = input15;		
 	assign mux[16] = input16;		
-	assign mux[17] = input17;						
+	assign mux[17] = input17;					
 	assign mux[18] = input18;		
 	assign mux[19] = input19;		
 	assign mux[20] = input20;		
@@ -83,8 +83,6 @@ input[31:0]    input31
 	assign mux[29] = input29;		
 	assign mux[30] = input30;		
 	assign mux[31] = input31;		
-
-
 
 
   assign out = mux[address];	// Connect the output of the array
