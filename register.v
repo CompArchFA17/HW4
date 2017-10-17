@@ -18,16 +18,15 @@ endmodule // register
 
 module register32
 (
-output reg[31:0] q,
+output [31:0] q,
 input[31:0] d,
 input wrenable, 
 input clk
 );
 	// TODO: figure out how to use register module here.
-	always @(posedge clk) begin
-		if(wrenable) begin
-			q[31:0] = d[31:0];
-		end
+	genvar i;
+	for (i = 0; i < 32; i = i + 1) begin
+		register singleRegister (q[i], d[i], wrenable, clk);
 	end
 
 endmodule // register32
