@@ -25,5 +25,6 @@ input			Clk		// Clock (Positive Edge Triggered)
   // and replace them with your actual code.
   assign ReadData1 = 42;
   assign ReadData2 = 42;
+// How do I get the ReadData1 and ReadData2 output?
 
 endmodule
