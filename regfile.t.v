@@ -2,6 +2,7 @@
 // Test harness validates hw4testbench by connecting it to various functional 
 // or broken register files, and verifying that it correctly identifies each
 //------------------------------------------------------------------------------
+`include "regfile.v"
 
 module hw4testbenchharness();
 
@@ -90,6 +91,46 @@ output reg[4:0]		WriteRegister,
 output reg		RegWrite,
 output reg		Clk
 );
+  
+
+  // Call this after every test to reset everything
+  task resetReg;
+  integer i;
+    begin
+      //$display("Resetting...");
+      RegWrite=1;
+      WriteData=32'd0;
+      for (i=0;i<32; i=i+1) begin
+        WriteRegister=i;
+        #5 Clk=1; #5 Clk=0;
+      end
+      WriteData=0;
+      ReadRegister1=0;
+      ReadRegister2=0;
+      WriteRegister=0;
+      RegWrite=0;
+    end
+  endtask
+
+  // Runs test and confirms that the results in ReadData are the same
+  // as the expected values
+  // Takes two expected values as inputs.
+  task test;
+    input expectedReadData1, expectedReadData2;
+    integer expectedReadData1, expectedReadData2;
+    integer i;
+    
+    begin
+      #5 Clk=1; #5 Clk=0;
+      if((ReadData1 != expectedReadData1) || (ReadData2 != expectedReadData2)) begin
+        $display("Test Case Failed");
+        dutpassed=0;
+      end
+      $display("Expected: %2d, %2d", expectedReadData1, expectedReadData2);
+      $display("Got: %2d, %2d\n", ReadData1, ReadData2);
+      resetReg;
+    end
+  endtask
 
   // Initialize register driver signals
   initial begin
@@ -109,34 +150,64 @@ output reg		Clk
 
   // Test Case 1: 
   //   Write '42' to register 2, verify with Read Ports 1 and 2
-  //   (Passes because example register file is hardwired to return 42)
   WriteRegister = 5'd2;
   WriteData = 32'd42;
   RegWrite = 1;
   ReadRegister1 = 5'd2;
   ReadRegister2 = 5'd2;
-  #5 Clk=1; #5 Clk=0;	// Generate single clock pulse
 
-  // Verify expectations and report test result
-  if((ReadData1 != 42) || (ReadData2 != 42)) begin
-    dutpassed = 0;	// Set to 'false' on failure
-    $display("Test Case 1 Failed");
-  end
+  test(42, 42);
+
 
   // Test Case 2: 
   //   Write '15' to register 2, verify with Read Ports 1 and 2
-  //   (Fails with example register file, but should pass with yours)
   WriteRegister = 5'd2;
   WriteData = 32'd15;
   RegWrite = 1;
   ReadRegister1 = 5'd2;
   ReadRegister2 = 5'd2;
-  #5 Clk=1; #5 Clk=0;
 
-  if((ReadData1 != 15) || (ReadData2 != 15)) begin
-    dutpassed = 0;
-    $display("Test Case 2 Failed");
-  end
+  test(15, 15);
+
+  // Test Case 3: 
+  // Set RegWrite to false, verify that no registers are being written
+  WriteRegister = 5'd2;
+  WriteData = 32'd15;
+  RegWrite = 0;
+  ReadRegister1 = 5'd2;
+  ReadRegister2 = 5'd3;
+
+  test(0, 0);
+
+  // Test Case 4: 
+  // Check if decoder is broken and all registers are being written to
+  WriteRegister = 5'd2;
+  WriteData = 32'd15;
+  RegWrite = 1;
+  ReadRegister1 = 5'd1;
+  ReadRegister2 = 5'd3;
+
+  test(0, 0);
+
+  // Test Case 5: 
+  // Verify that register 0 is not an actual register but a constant 0
+  WriteRegister = 5'd0;
+  WriteData = 32'd10;
+  RegWrite = 1;
+  ReadRegister1 = 5'd0;
+  ReadRegister2 = 5'd0;
+
+  test(0, 0);
+
+  // Test Case 6: 
+  // Verify that register 0 is not an actual register but a constant 0
+  WriteRegister = 5'd7;
+  WriteData = 32'd10;
+  RegWrite = 1;
+  ReadRegister1 = 5'd7;
+  ReadRegister2 = 5'd14;
+
+  test(10, 0);
 
 
   // All done!  Wait a moment and signal test completion.
