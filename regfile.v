@@ -64,38 +64,38 @@ input		Clk		// Clock (Positive Edge Triggered)
 	decoder1to32 decoder(dec_out, RegWrite, WriteRegister); //out, enable, address
 
 	//create registers themselves
-	register32zero reg_0 (reg0, WriteData, decout[0], Clk); //zero register takes sets output to zero always.
-	register32 reg_1 (reg1, WriteData, decout[1], Clk);
-	register32 reg_2 (reg2, WriteData, decout[2], Clk);
-	register32 reg_3 (reg3, WriteData, decout[3], Clk);
-	register32 reg_4 (reg4, WriteData, decout[4], Clk);
-	register32 reg_5 (reg5, WriteData, decout[5], Clk);
-	register32 reg_6 (reg6, WriteData, decout[6], Clk);
-	register32 reg_7 (reg7, WriteData, decout[7], Clk);
-	register32 reg_8 (reg8, WriteData, decout[8], Clk);
-	register32 reg_9 (reg9, WriteData, decout[9], Clk);
-	register32 reg_10 (reg10, WriteData, decout[10], Clk);
-	register32 reg_11 (reg11, WriteData, decout[11], Clk);
-	register32 reg_12 (reg12, WriteData, decout[12], Clk);
-	register32 reg_13 (reg13, WriteData, decout[13], Clk);
-	register32 reg_14 (reg14, WriteData, decout[14], Clk);
-	register32 reg_15 (reg15, WriteData, decout[15], Clk);
-	register32 reg_16 (reg16, WriteData, decout[16], Clk);
-	register32 reg_17 (reg17, WriteData, decout[17], Clk);
-	register32 reg_18 (reg18, WriteData, decout[18], Clk);
-	register32 reg_19 (reg19, WriteData, decout[19], Clk);
-	register32 reg_20 (reg20, WriteData, decout[20], Clk);
-	register32 reg_21 (reg21, WriteData, decout[21], Clk);
-	register32 reg_22 (reg22, WriteData, decout[22], Clk);
-	register32 reg_23 (reg23, WriteData, decout[23], Clk);
-	register32 reg_24 (reg24, WriteData, decout[24], Clk);
-	register32 reg_25 (reg25, WriteData, decout[25], Clk);
-	register32 reg_26 (reg26, WriteData, decout[26], Clk);
-	register32 reg_27 (reg27, WriteData, decout[27], Clk);
-	register32 reg_28 (reg28, WriteData, decout[28], Clk);
-	register32 reg_29 (reg29, WriteData, decout[29], Clk);
-	register32 reg_30 (reg30, WriteData, decout[30], Clk);
-	register32 reg_31 (reg31, WriteData, decout[31], Clk);
+	register32zero reg_0 (reg0, WriteData, dec_out[0], Clk); //zero register takes sets output to zero always.
+	register32 reg_1 (reg1, WriteData, dec_out[1], Clk);
+	register32 reg_2 (reg2, WriteData, dec_out[2], Clk);
+	register32 reg_3 (reg3, WriteData, dec_out[3], Clk);
+	register32 reg_4 (reg4, WriteData, dec_out[4], Clk);
+	register32 reg_5 (reg5, WriteData, dec_out[5], Clk);
+	register32 reg_6 (reg6, WriteData, dec_out[6], Clk);
+	register32 reg_7 (reg7, WriteData, dec_out[7], Clk);
+	register32 reg_8 (reg8, WriteData, dec_out[8], Clk);
+	register32 reg_9 (reg9, WriteData, dec_out[9], Clk);
+	register32 reg_10 (reg10, WriteData, dec_out[10], Clk);
+	register32 reg_11 (reg11, WriteData, dec_out[11], Clk);
+	register32 reg_12 (reg12, WriteData, dec_out[12], Clk);
+	register32 reg_13 (reg13, WriteData, dec_out[13], Clk);
+	register32 reg_14 (reg14, WriteData, dec_out[14], Clk);
+	register32 reg_15 (reg15, WriteData, dec_out[15], Clk);
+	register32 reg_16 (reg16, WriteData, dec_out[16], Clk);
+	register32 reg_17 (reg17, WriteData, dec_out[17], Clk);
+	register32 reg_18 (reg18, WriteData, dec_out[18], Clk);
+	register32 reg_19 (reg19, WriteData, dec_out[19], Clk);
+	register32 reg_20 (reg20, WriteData, dec_out[20], Clk);
+	register32 reg_21 (reg21, WriteData, dec_out[21], Clk);
+	register32 reg_22 (reg22, WriteData, dec_out[22], Clk);
+	register32 reg_23 (reg23, WriteData, dec_out[23], Clk);
+	register32 reg_24 (reg24, WriteData, dec_out[24], Clk);
+	register32 reg_25 (reg25, WriteData, dec_out[25], Clk);
+	register32 reg_26 (reg26, WriteData, dec_out[26], Clk);
+	register32 reg_27 (reg27, WriteData, dec_out[27], Clk);
+	register32 reg_28 (reg28, WriteData, dec_out[28], Clk);
+	register32 reg_29 (reg29, WriteData, dec_out[29], Clk);
+	register32 reg_30 (reg30, WriteData, dec_out[30], Clk);
+	register32 reg_31 (reg31, WriteData, dec_out[31], Clk);
 
 	//Data reading port 1
 	//Based on MUX with appropriate output, address, and inputs

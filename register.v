@@ -38,6 +38,14 @@ endmodule
 
 // 32-bit Register that always outputs 0
 // register does not have write capability
-module register32zero(output reg [31:0] q,);
-	q[31:0] = 0;
+module register32zero
+(
+output reg [31:0] q,
+input [31:0] d,
+input wrenable,
+input clk
+);
+	always @(posedge clk) begin
+		q = 32'b0;
+	end
 endmodule
