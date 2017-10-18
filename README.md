@@ -1,5 +1,20 @@
 # CompArch HW b0100: Register File #
 
+Kaitlyn Keil
+
+## Instructions to Run ##
+
+Run code with:
+
+```
+>>>iverilog -o <output file name> regfile.t.v
+>>>./<output file name>
+```
+
+The terminal will display whether all the tests passed (```DUT Passed: 1```) or failed, along with the test case that failed.
+
+Written work is in the pdf [hw4written.pdf](https://github.com/KaitlynKeil/HW4/blob/master/hw4written.pdf).
+
 **Due:** Monday, October 16
 
 This homework is intended to introduce behavioral Verilog and practice test bench design. You will create your first memory, a register file, which will be reused in your CPU design.
