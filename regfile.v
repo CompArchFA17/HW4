@@ -22,7 +22,7 @@ input			RegWrite,	// Enable writing of register when High
 input			Clk		// Clock (Positive Edge Triggered)
 );
   wire[31:0] selectregister;
-  decoder1to32 decoder(selectregister, 1'b1, WriteRegister); // Not sure if WriteRegister is the input variable to use
+  decoder1to32 decoder(selectregister, RegWrite, WriteRegister); // Not sure if WriteRegister is the input variable to use
 
   wire[31:0] q0, q1, q2, q3,
   			q4, q5, q6, q7,
