@@ -1,9 +1,10 @@
-// Single-bit D Flip-Flop with enable
+// 32-bit D Flip-Flop with enable
 //   Positive edge triggered
-module register
+
+module register32
 (
-output reg q,
-input d,
+output reg[31:0] q,
+input[31:0] d,
 input wrenable,
 input	clk
 );
