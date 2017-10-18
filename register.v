@@ -33,7 +33,7 @@ input[31:0]		d,
 input		wrenable,
 input		clk
 );
-    
+
 register getbit0(q[0], d[0], wrenable, clk);
 register getbit1(q[1], d[1], wrenable, clk);
 register getbit2(q[2], d[2], wrenable, clk);
