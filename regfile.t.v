@@ -2,6 +2,7 @@
 // Test harness validates hw4testbench by connecting it to various functional 
 // or broken register files, and verifying that it correctly identifies each
 //------------------------------------------------------------------------------
+`include "regfile.v"
 
 module hw4testbenchharness();
 
@@ -16,7 +17,6 @@ module hw4testbenchharness();
 
   reg		begintest;	// Set High to begin testing register file
   wire		dutpassed;	// Indicates whether register file passed tests
-
   // Instantiate the register file being tested.  DUT = Device Under Test
   regfile DUT
   (
@@ -138,6 +138,67 @@ output reg		Clk
     $display("Test Case 2 Failed");
   end
 
+  // Test Write Enable for broken or ignored
+  // Fails if a same action is made regardless of write enable
+  WriteRegister = 5'd4;
+  WriteData = 32'd16;
+  RegWrite = 1;
+  ReadRegister1 = 5'd4;
+  ReadRegister2 = 5'd4;
+  #5 Clk=1; #5 Clk=0;
+
+  WriteRegister = 5'd5;
+  WriteData = 32'd16;
+  RegWrite = 0;
+  ReadRegister1 = 5'd4;
+  ReadRegister2 = 5'd5;
+  #5 Clk=1; #5 Clk=0;
+
+  if(ReadData1 == ReadData2) begin
+    dutpassed = 0;
+    $display("Performing same action regardless of write enable");
+  end
+
+  // Test for decoder broken
+  WriteRegister = 5'd4;
+  WriteData = 32'd10;
+  RegWrite = 1;
+  ReadRegister1 = 5'd4;
+  ReadRegister2 = 5'd10;
+  #5 Clk=1; #5 Clk=0;
+
+  if ((ReadData1 & ReadData2) == ReadData1) begin
+    dutpassed = 0;
+    $display("Decoder broken, multiple registers written to");
+  end
+
+  // Test value of register zero
+  WriteRegister = 5'd0;
+  WriteData = 32'd10;
+  RegWrite = 1;
+  ReadRegister1 = 5'd0;
+  ReadRegister2 = 5'd10;
+  #5 Clk=1; #5 Clk=0;
+
+  if (ReadData1 != 0) begin
+    dutpassed = 0;
+    $display("Constant value register broken, not always outputting 0");
+  end
+
+  // Test port 2
+  ReadRegister1 = 5'd10;
+  ReadRegister2 = 5'd10;
+  #5 Clk=1; #5 Clk=0;
+
+  if (ReadData1 != ReadData1) begin
+    dutpassed = 0;
+    $display("A port is reporting an incorrect value");
+  end
+
+  // Perfect register file
+  if(dutpassed == 1) begin
+    $display("Fully perfect register file");
+  end
 
   // All done!  Wait a moment and signal test completion.
   #5
