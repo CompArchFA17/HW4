@@ -5,6 +5,8 @@
 //   2 asynchronous read ports
 //   1 synchronous, positive edge triggered write port
 //------------------------------------------------------------------------------
+`include "register.v"
+`include "decoders.v"
 
 module regfile
 (
@@ -18,21 +20,21 @@ input		RegWrite,	// Enable writing of register when High
 input		Clk		// Clock (Positive Edge Triggered)
 );
 
-  wire[31:0] wrenable;
+  wire[31:0] wrenable; 
   decoder1to32 decode(wrenable, RegWrite, WriteRegister);
-  wire[31:0] regOutputs;
-
+  wire[31:0] regOutputs[31:0];
+  register32zero registerZero(regOutputs[0], WriteData, wrenable[0], Clk); //Set first register to all 0's
 
   generate
     genvar i;
-    for (i = 0; i < 32; i = i + 1)
+    for (i = 1; i < 32; i = i + 1)
       begin : writeRegisterLoop
-        register32 registerWriter(regOutputs[i], WriteData, wrenable[i], Clk)
+        register32 registerWriter(regOutputs[i], WriteData, wrenable[i], Clk);
     end
   endgenerate
 
   // Select the correct registers to read from
-  mux32to1by32 muxRegiser1(ReadData1,
+  mux32to1by32 muxRegister1(ReadData1,
   						   ReadRegister1, 
   						   regOutputs[0],
   						   regOutputs[1],
@@ -68,7 +70,7 @@ input		Clk		// Clock (Positive Edge Triggered)
   						   regOutputs[31]
   						   );
 
-  mux32to1by32 muxRegiser1(ReadData1,
+  mux32to1by32 muxRegister2(ReadData1,
   						   ReadRegister1, 
   						   regOutputs[0],
   						   regOutputs[1],
@@ -103,11 +105,4 @@ input		Clk		// Clock (Positive Edge Triggered)
   						   regOutputs[30],
   						   regOutputs[31]
   						   );
-
-  // // These two lines are clearly wrong.  They are included to showcase how the 
-  // // test harness works. Delete them after you understand the testing process, 
-  // // and replace them with your actual code.
-  // assign ReadData1 = 42;
-  // assign ReadData2 = 42;
-
 endmodule
