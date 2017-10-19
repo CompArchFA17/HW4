@@ -18,23 +18,96 @@ input		RegWrite,	// Enable writing of register when High
 input		Clk		// Clock (Positive Edge Triggered)
 );
 
-  wire[31:0] enable;
-  decoder1to32 decode(enable, RegWrite, WriteRegister)
+  wire[31:0] wrenable;
+  decoder1to32 decode(wrenable, RegWrite, WriteRegister);
   wire[31:0] regOutputs;
 
 
   generate
     genvar i;
-    for (i = 0; i < 31; i = i + 1)
-      begin : registerWrite
-    
+    for (i = 0; i < 32; i = i + 1)
+      begin : writeRegisterLoop
+        register32 registerWriter(regOutputs[i], WriteData, wrenable[i], Clk)
     end
-  endgenerate 
+  endgenerate
 
-  // These two lines are clearly wrong.  They are included to showcase how the 
-  // test harness works. Delete them after you understand the testing process, 
-  // and replace them with your actual code.
-  assign ReadData1 = 42;
-  assign ReadData2 = 42;
+  // Select the correct registers to read from
+  mux32to1by32 muxRegiser1(ReadData1,
+  						   ReadRegister1, 
+  						   regOutputs[0],
+  						   regOutputs[1],
+  						   regOutputs[2],
+  						   regOutputs[3],
+  						   regOutputs[4],
+  						   regOutputs[5],
+  						   regOutputs[6],
+  						   regOutputs[7],
+  						   regOutputs[8],
+  						   regOutputs[9],
+  						   regOutputs[10],
+  						   regOutputs[11],
+  						   regOutputs[12],
+  						   regOutputs[13],
+  						   regOutputs[14],
+  						   regOutputs[15],
+  						   regOutputs[16],
+  						   regOutputs[17],
+  						   regOutputs[18],
+  						   regOutputs[19],
+  						   regOutputs[20],
+  						   regOutputs[21],
+  						   regOutputs[22],
+  						   regOutputs[23],
+  						   regOutputs[24],
+  						   regOutputs[25],
+  						   regOutputs[26],
+  						   regOutputs[27],
+  						   regOutputs[28],
+  						   regOutputs[29],
+  						   regOutputs[30],
+  						   regOutputs[31]
+  						   );
+
+  mux32to1by32 muxRegiser1(ReadData1,
+  						   ReadRegister1, 
+  						   regOutputs[0],
+  						   regOutputs[1],
+  						   regOutputs[2],
+  						   regOutputs[3],
+  						   regOutputs[4],
+  						   regOutputs[5],
+  						   regOutputs[6],
+  						   regOutputs[7],
+  						   regOutputs[8],
+  						   regOutputs[9],
+  						   regOutputs[10],
+  						   regOutputs[11],
+  						   regOutputs[12],
+  						   regOutputs[13],
+  						   regOutputs[14],
+  						   regOutputs[15],
+  						   regOutputs[16],
+  						   regOutputs[17],
+  						   regOutputs[18],
+  						   regOutputs[19],
+  						   regOutputs[20],
+  						   regOutputs[21],
+  						   regOutputs[22],
+  						   regOutputs[23],
+  						   regOutputs[24],
+  						   regOutputs[25],
+  						   regOutputs[26],
+  						   regOutputs[27],
+  						   regOutputs[28],
+  						   regOutputs[29],
+  						   regOutputs[30],
+  						   regOutputs[31]
+  						   );
+
+  // // These two lines are clearly wrong.  They are included to showcase how the 
+  // // test harness works. Delete them after you understand the testing process, 
+  // // and replace them with your actual code.
+  // assign ReadData1 = 42;
+  // assign ReadData2 = 42;
 
 endmodule
