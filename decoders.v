@@ -11,12 +11,3 @@ input[4:0]	address
     assign out = enable<<address;
 
 endmodule
-/*
-Deliverable 6:
-If enable is 0, enable<<address will always be zero.
-If enable is 1, enable<<address will be mostly zero,
-except its addressth bit will be 1. This is exactly
-the behaviour of a decoder. The addressth bit of the output
-will be equal to 1 if enable is high, otherwise it will be zero.
-All the other bits of out will always be zero.
-*/
