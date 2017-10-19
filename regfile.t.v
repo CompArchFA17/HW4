@@ -102,47 +102,88 @@ output reg		Clk
     Clk=0;
   end
 
+  integer i, j;
   // Once 'begintest' is asserted, start running test cases
   always @(posedge begintest) begin
     endtest = 0;
     dutpassed = 1;
     #10
 
-  // Test Case 1: 
-  //   Write '42' to register 2, verify with Read Ports 1 and 2
-  //   (Passes because example register file is hardwired to return 42)
-  WriteRegister = 5'd2;
-  WriteData = 32'd42;
-  RegWrite = 1;
-  ReadRegister1 = 5'd2;
-  ReadRegister2 = 5'd2;
-  #5 Clk=1; #5 Clk=0;	// Generate single clock pulse
+    // Test Case 1
+    //   Writing to registers
+    for (i = 0; i <= 'b11111; i = i + 1) begin
+      WriteRegister = i;
+      WriteData = i;
+      RegWrite = 1;
+      ReadRegister1 = i;
+      ReadRegister2 = i;
+      #5 Clk=1; #5 Clk=0;
 
-  // Verify expectations and report test result
-  if((ReadData1 != 42) || (ReadData2 != 42)) begin
-    dutpassed = 0;	// Set to 'false' on failure
-    $display("Test Case 1 Failed");
-  end
+      if((ReadData1 != i) || (ReadData2 != i)) begin
+        dutpassed = 0;
+        $display("Test Case 1 Failed : failed to write to register %d", i);
+      end
+    end
 
-  // Test Case 2: 
-  //   Write '15' to register 2, verify with Read Ports 1 and 2
-  //   (Fails with example register file, but should pass with yours)
-  WriteRegister = 5'd2;
-  WriteData = 32'd15;
-  RegWrite = 1;
-  ReadRegister1 = 5'd2;
-  ReadRegister2 = 5'd2;
-  #5 Clk=1; #5 Clk=0;
+    // Test Case 2
+    //   write to 0 register
+    //   should always return 0
+    WriteRegister = 5'd0;
+    WriteData = 32'hffffffff;
+    RegWrite = 1;
+    ReadRegister1 = 5'd0;
+    ReadRegister2 = 5'd0;
+    #5 Clk=1; #5 Clk=0;
 
-  if((ReadData1 != 15) || (ReadData2 != 15)) begin
-    dutpassed = 0;
-    $display("Test Case 2 Failed");
-  end
+    if((ReadData1 != 0) || (ReadData2 != 0)) begin
+      dutpassed = 0;
+      $display("Test Case 2 Failed : wrote to zero port");
+    end
 
+    // Test Case 3
+    //   write enabled
+    //   should return unchanged value from above
+    for (i = 0; i <= 'b11111; i = i + 1) begin
+      WriteRegister = i;
+      WriteData = 32'hffffffff;
+      RegWrite = 0;
+      ReadRegister1 = i;
+      ReadRegister2 = i;
+      #5 Clk=1; #5 Clk=0;
 
-  // All done!  Wait a moment and signal test completion.
-  #5
-  endtest = 1;
+      if((ReadData1 != i) || (ReadData2 != i)) begin
+        dutpassed = 0;
+        $display("Test Case 3 Failed : register %d changed when wrenable is false", i);
+      end
+    end
+
+    // Test Case 4
+    //   Broken decoder
+    //   All registers should start with their address in their memory
+    for (i = 0; i <= 'b11111; i = i + 1) begin
+      WriteRegister = i;
+      WriteData = 32'hffffffff;
+      RegWrite = 1;
+      #5 Clk=1; #5 Clk=0;
+
+      for (j = 0; j <= 'b11111; j = j + 2) begin
+        if (j != i) begin
+          RegWrite = 0;
+          ReadRegister1 = i;
+          ReadRegister2 = i + 1;
+          #5 Clk=1; #5 Clk=0;
+
+          if((ReadData1 == i) || (ReadData2 == i)) begin
+            dutpassed = 0;
+            $display("Test Case 4 Failed : value for register %d written to multiple registers", i);
+          end
+        end
+      end
+    end
+
+    // All done!  Wait a moment and signal test completion.
+    #5
+    endtest = 1;
 
 end
 
