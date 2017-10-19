@@ -1,6 +1,6 @@
 # Writeup HW 4
 ## Deliverable 1
-
+![diagrams](https://github.com/TShapinsky/HW4/blob/master/diagrams.jpg?raw=true)
 ## Deliverable 6
 ```verilog
     assign out = enable<<address; 
