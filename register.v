@@ -19,7 +19,7 @@ endmodule
 module register32
 (
 
-    output[31:0] reg    q,
+    output reg[31:0]    q,
     input[31:0]         d,
     input               wrenable,
     input               clk
@@ -35,12 +35,14 @@ endmodule
 
 module register32zero
 (
-    output[31:0] reg    q,
+    output reg[31:0]    q,
     input[31:0]         d,
-    input               wrenable.
+    input               wrenable,
     input               clk
 );
 
-    q = 32'b0;
-
+    always @(posedge clk) begin
+        q = 32'b0;
+    end
+    
 endmodule
