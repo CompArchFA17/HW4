@@ -141,6 +141,75 @@ output reg		Clk
   end
 
 
+  // Test Case 3: 
+  // Check whether 'enable' is working
+  WriteRegister = 5'd2;
+  WriteData = 32'd20;
+  RegWrite = 0;
+  ReadRegister1 = 5'd2;
+  ReadRegister2 = 5'd2;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == 20) || (ReadData2 == 20)) begin
+    dutpassed = 0;
+    $display("Test Case 3 Failed. Enable flag is not working");
+  end
+
+  // Test Case 4: 
+  // Check whether decoder is working properly
+  WriteRegister = 5'd2;
+  WriteData = 32'd20;
+  RegWrite = 1;
+  ReadRegister1 = 5'd2;
+  ReadRegister2 = 5'd2;
+  #5 Clk=1; #5 Clk=0;
+
+  WriteRegister = 5'd3;
+  WriteData = 32'd25;
+  RegWrite = 1;
+  ReadRegister1 = 5'd2;
+  ReadRegister2 = 5'd3;
+  #5 Clk=1; #5 Clk=0;
+
+  if(ReadData1 == 25) begin
+    dutpassed = 0;
+    $display("Test Case 4 Failed. Enable flag is not working");
+  end
+
+  // Test Case 5: 
+  // Check whether register zero is working properly
+  WriteRegister = 5'd0;
+  WriteData = 32'd20;
+  RegWrite = 1;
+  ReadRegister1 = 5'd0;
+  ReadRegister2 = 5'd2;
+  #5 Clk=1; #5 Clk=0;
+
+  if(ReadData1 == 20) begin
+    dutpassed = 0;
+    $display("Test Case 4 Failed. Enable flag is not working");
+  end
+
+  // Test Case 6: 
+  // Check whether port 2 is working properly
+  WriteRegister = 5'd14;
+  WriteData = 32'd30;
+  RegWrite = 1;
+  ReadRegister1 = 5'd0;
+  ReadRegister2 = 5'd2;
+  #5 Clk=1; #5 Clk=0;
+
+  WriteRegister = 5'd15;
+  WriteData = 32'd50;
+  RegWrite = 1;
+  ReadRegister1 = 5'd0;
+  ReadRegister2 = 5'd15;
+  #5 Clk=1; #5 Clk=0;
+  if(ReadData2 != 50) begin
+    dutpassed = 0;
+    $display("Test Case 4 Failed. Enable flag is not working");
+  end
+
   // All done!  Wait a moment and signal test completion.
   #5
   endtest = 1;
