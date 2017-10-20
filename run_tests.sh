@@ -10,4 +10,4 @@ echo "running multiplexer unit tests..." &&
 echo "running decoder unit tests..." &&
 ./decoder_test &&
 echo "running regfile test bench..." &&
-./regfile_test &&
+./regfile_test
