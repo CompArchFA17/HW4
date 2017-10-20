@@ -28,10 +28,10 @@ always @(posedge (clk & wrenable)) begin
 end
 ~~~
 
-Deliverable 2 ~ 5 are in 'register.v'
+**Deliverable 2 ~ 5** are in 'register.v'
 
-Deliverable 6 is in 'decoders.v' as comments
+**Deliverable 6** is in 'decoders.v' as comments
 
-Deliverable 7 is in 'regfile.v'
+**Deliverable 7** is in 'regfile.v'
 
-Deliverable 8 is in 'regfile.t.v'
+**Deliverable 8** is in 'regfile.t.v'
