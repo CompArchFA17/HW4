@@ -13,7 +13,6 @@ input		clk
             q = d;
         end
     end
-
 endmodule // register
 
 // 32 bits of D Flip-Flops with enable.
@@ -30,7 +29,6 @@ input clk
 	for (i = 0; i < 32; i = i + 1) begin
 		register singleRegister (q[i], d[i], wrenable, clk);
 	end
-
 endmodule // register32
 
 
@@ -47,5 +45,4 @@ input clk
 	for (i = 0; i < 32; i = i + 1) begin
 		assign q[i] = 1'b0;
 	end
-
 endmodule // register32zero
