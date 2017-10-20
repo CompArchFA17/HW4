@@ -1,2 +1,1 @@
-The module for deliverable 5 is a 32 select multiplexer where each input is also 32 bits.
-This is because each of our registers has 32 bits for the instructions being fed to the CPU.
+This module is a decoder.  The address does a bitshift on the enable signal moving it from the least significant bit to the most significant bit.  The output is those either all 0s or the value at which the address inputs is 1.  Thus behaviorally it is a decoder.
