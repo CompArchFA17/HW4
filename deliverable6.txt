@@ -1,0 +1,9 @@
+Deliverable 6
+
+This module shifts the enable bit left based on the address, until enable is
+stored in the address. The value of enable will be stored in output (specifically,
+in output[address]). All the other bits will be set to zero. Thus when enable is 1,
+then 1 will be stored in output[address] and all other values will be set to zero.
+This corresponds to the same behavior as a decoder, where at most only one value
+is 1 (if enable = 1) in order to select an option (otherwise if enable = 1,
+everything will be 0).
