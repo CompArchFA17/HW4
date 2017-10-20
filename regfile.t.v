@@ -2,6 +2,7 @@
 // Test harness validates hw4testbench by connecting it to various functional 
 // or broken register files, and verifying that it correctly identifies each
 //------------------------------------------------------------------------------
+`include "regfile.v"
 
 module hw4testbenchharness();
 
@@ -91,6 +92,9 @@ output reg		RegWrite,
 output reg		Clk
 );
 
+  // loop index
+  integer index;
+
   // Initialize register driver signals
   initial begin
     WriteData=32'd0;
@@ -137,6 +141,155 @@ output reg		Clk
     dutpassed = 0;
     $display("Test Case 2 Failed");
   end
+
+
+  //--------Deliverable 8---------
+
+  // 1. A fully perfect register file. Return True when this is detected, false for all others.
+
+  // Test Case 1:
+  //   Write maximum value to all register. Then check the value of them
+  WriteData = 32'hFFFFFFFF;
+  RegWrite = 1;
+  for(index=1;index<32;index=index+1) begin
+    WriteRegister = index;
+    ReadRegister1 = index;
+    ReadRegister2 = index;
+    #5 Clk=1; #5 Clk=0;
+    
+    if((ReadData1 != 4294967295) || (ReadData2 != 4294967295)) begin
+      dutpassed = 0;
+      $display("Type 1 Test Case 1 Failed");
+    end
+  end
+
+
+  // 2. Write Enable is broken / ignored – Register is always written to.
+
+  // Test Case 1:
+  //   After writing '1955103904 - 10*(register number)' to a register, disenable RegWrite.
+  //   Then try to write '3410 + (register number)*(register number)' to the register. Repeat for all register. 
+  
+  for(index=1;index<32;index=index+1) begin
+    WriteRegister = index;
+    WriteData = 32'd1955103904 - 10*index;
+    RegWrite = 1;
+    #5 Clk=1; #5 Clk=0;
+    RegWrite = 0;
+    WriteData = 32'd3410 + index*index;
+    #5 Clk=1; #5 Clk=0;
+    ReadRegister1 = index;
+    ReadRegister2 = index;
+    if((ReadData1 != 1955103904 - 10*index) || (ReadData2 != 1955103904 - 10*index)) begin
+      dutpassed = 0;
+      $display("Type 2 Test Case 1 Failed");
+    end
+  end
+
+
+  // 3. Decoder is broken – All registers are written to.
+
+  // Test Case 1:
+  //   After reset all register to zero, write '795546904' to register 9. Then check the value of other registers
+  
+  // Reset all register to zero
+  RegWrite = 1;
+  WriteData = 0;  
+  for(index=1;index<32;index=index+1) begin
+    WriteRegister = index;
+    #5 Clk=1; #5 Clk=0;
+  end
+
+  WriteRegister = 5'd9;
+  WriteData = 32'd795546904;
+  #5 Clk=1; #5 Clk=0;
+
+  for(index=1;index<32;index=index+1) begin
+    ReadRegister1 = index;
+    ReadRegister2 = index;
+    if (index == 9) begin
+      if((ReadData1 != 795546904) || (ReadData2 != 795546904)) begin
+        dutpassed = 0;
+        $display("Type 3 Test Case 1 Failed");
+      end
+    end
+    else if((ReadData1 != 0) || (ReadData2 != 0)) begin
+      dutpassed = 0;
+      $display("Type 3 Test Case 1 Failed");
+    end
+  end
+
+  // Test Case 2:
+  //   Write '8193' to register 13, '4294901760' to register 31, and '15793935' to register 16.
+  //   Then Check the value of register 9, 13, 16, 31
+  WriteRegister = 5'd13;
+  WriteData = 32'd8193;
+  #5 Clk=1; #5 Clk=0;
+  WriteRegister = 5'd31;
+  WriteData = 32'd4294901760;
+  #5 Clk=1; #5 Clk=0;
+  WriteRegister = 5'd16;
+  WriteData = 32'd15793935;
+  #5 Clk=1; #5 Clk=0;
+
+  ReadRegister1 = 5'd9;
+  ReadRegister2 = 5'd13;
+  if((ReadData1 != 795546904) || (ReadData2 != 8193)) begin
+    dutpassed = 0;
+    $display("Type 3 Test Case 2 Failed");
+  end
+
+  ReadRegister1 = 5'd16;
+  ReadRegister2 = 5'd31;
+  if((ReadData1 != 15793935) || (ReadData2 != 4294901760)) begin
+    dutpassed = 0;
+    $display("Type 3 Test Case 2 Failed");
+  end
+
+
+
+
+  // 4. Register Zero is actually a register instead of the constant value zero.
+
+  // Test Case 1:
+  ReadRegister1 = 5'd0;
+  ReadRegister2 = 5'd0;
+  if((ReadData1 != 0) || (ReadData2 != 0)) begin
+    dutpassed = 0;
+    $display("Type 4 Test Case 1 Failed");
+  end
+
+
+  // Test Case 2:
+  //   Write '3410' to register 0, check its value changes 
+  WriteRegister = 5'd0;
+  WriteData = 32'd3410;
+  RegWrite = 1;
+  #5 Clk=1; #5 Clk=0;
+  
+  if((ReadData1 != 0) || (ReadData2 != 0)) begin
+    dutpassed = 0;
+    $display("Type 4 Test Case 2 Failed");
+  end
+
+  // Test Case 3:
+  //   Write '47186640' to register 0, check its value changes
+  WriteData = 32'd47186640;
+  #5 Clk=1; #5 Clk=0;
+  
+  if((ReadData1 != 0) || (ReadData2 != 0)) begin
+    dutpassed = 0;
+    $display("Type 4 Test Case 3 Failed");
+  end
+
+
+  // 5. Port 2 is broken and always reads register 14 (for example).
+
+  // Test Case 1:
+  //   
+
+
+
 
 
   // All done!  Wait a moment and signal test completion.
