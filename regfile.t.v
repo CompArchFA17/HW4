@@ -4,7 +4,6 @@
 //------------------------------------------------------------------------------
 
 `include "regfile.v"
-`include "register.t.v"
 
 module hw4testbenchharness();
 
@@ -112,7 +111,6 @@ output reg		Clk
 
   // Test Case 1: 
   //   Write '42' to register 2, verify with Read Ports 1 and 2
-  //   (Passes because example register file is hardwired to return 42)
   WriteRegister = 5'd2;
   WriteData = 32'd42;
   RegWrite = 1;
@@ -120,7 +118,6 @@ output reg		Clk
   ReadRegister2 = 5'd2;
   #5 Clk=1; #5 Clk=0;	// Generate single clock pulse
 
-  // Verify expectations and report test result
   if((ReadData1 != 42) || (ReadData2 != 42)) begin
     dutpassed = 0;	// Set to 'false' on failure
     $display("Test Case 1 Failed");
@@ -128,7 +125,6 @@ output reg		Clk
 
   // Test Case 2: 
   //   Write '15' to register 2, verify with Read Ports 1 and 2
-  //   (Fails with example register file, but should pass with yours)
   WriteRegister = 5'd2;
   WriteData = 32'd15;
   RegWrite = 1;
