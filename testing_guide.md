@@ -17,7 +17,7 @@ compile any of the necessary files to create 4 executables:
 Enter the command
 
 ```bash
-./<binary>
+./<executable>
 ```
 
 To run a single file once it has been compiled. If all unit tests pass for a test module, a confirmation of this will be printed to the terminal. The testbench will print "DUT passed? 1" if all tests in the testbench pass. A notice that one or more tests failed will be printed to the terminal otherwise. If the testbench fails, "DUT passed? 0" will be printed to the terminal.
