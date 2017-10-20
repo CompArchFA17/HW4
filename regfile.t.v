@@ -145,7 +145,7 @@ output reg		Clk
 
   //--------Deliverable 8---------
 
-  // 1. A fully perfect register file. Return True when this is detected, false for all others.
+  // 1
 
   // Test Case 1:
   //   Write maximum value to all register. Then check the value of them
@@ -182,7 +182,7 @@ output reg		Clk
     ReadRegister2 = index;
     if((ReadData1 != 1955103904 - 10*index) || (ReadData2 != 1955103904 - 10*index)) begin
       dutpassed = 0;
-      $display("Type 2 Test Case 1 Failed");
+      $display("Type 2 Test Case 1 Failed: A register changes while Write Enable is off");
     end
   end
 
@@ -190,7 +190,7 @@ output reg		Clk
   // 3. Decoder is broken – All registers are written to.
 
   // Test Case 1:
-  //   After reset all register to zero, write '795546904' to register 9. Then check the value of other registers
+  //   After reset all register to zero, write '795546904 - 34*(register number)' to all register. Then check the value of each register
   
   // Reset all register to zero
   RegWrite = 1;
@@ -200,28 +200,24 @@ output reg		Clk
     #5 Clk=1; #5 Clk=0;
   end
 
-  WriteRegister = 5'd9;
-  WriteData = 32'd795546904;
-  #5 Clk=1; #5 Clk=0;
+  for(index=1;index<32;index=index+1) begin
+    WriteRegister = index;
+    WriteData = 32'd795546904 - 34*index;
+    #5 Clk=1; #5 Clk=0;
+  end
 
   for(index=1;index<32;index=index+1) begin
     ReadRegister1 = index;
     ReadRegister2 = index;
-    if (index == 9) begin
-      if((ReadData1 != 795546904) || (ReadData2 != 795546904)) begin
-        dutpassed = 0;
-        $display("Type 3 Test Case 1 Failed");
-      end
-    end
-    else if((ReadData1 != 0) || (ReadData2 != 0)) begin
+    if((ReadData1 != (795546904 - 34*index)) || (ReadData2 != (795546904 - 34*index))) begin
       dutpassed = 0;
-      $display("Type 3 Test Case 1 Failed");
+      $display("Type 3 Test Case 1 Failed: Decoder is broken");
     end
   end
 
   // Test Case 2:
   //   Write '8193' to register 13, '4294901760' to register 31, and '15793935' to register 16.
-  //   Then Check the value of register 9, 13, 16, 31
+  //   Then Check the value of register 1, 13, 16, 31
   WriteRegister = 5'd13;
   WriteData = 32'd8193;
   #5 Clk=1; #5 Clk=0;
@@ -232,18 +228,18 @@ output reg		Clk
   WriteData = 32'd15793935;
   #5 Clk=1; #5 Clk=0;
 
-  ReadRegister1 = 5'd9;
+  ReadRegister1 = 5'd1;
   ReadRegister2 = 5'd13;
-  if((ReadData1 != 795546904) || (ReadData2 != 8193)) begin
+  if((ReadData1 != 795546870) || (ReadData2 != 8193)) begin
     dutpassed = 0;
-    $display("Type 3 Test Case 2 Failed");
+    $display("Type 3 Test Case 2 Failed: Decoder is broken");
   end
 
   ReadRegister1 = 5'd16;
   ReadRegister2 = 5'd31;
   if((ReadData1 != 15793935) || (ReadData2 != 4294901760)) begin
     dutpassed = 0;
-    $display("Type 3 Test Case 2 Failed");
+    $display("Type 3 Test Case 2 Failed: Decoder is broken");
   end
 
 
@@ -256,7 +252,7 @@ output reg		Clk
   ReadRegister2 = 5'd0;
   if((ReadData1 != 0) || (ReadData2 != 0)) begin
     dutpassed = 0;
-    $display("Type 4 Test Case 1 Failed");
+    $display("Type 4 Test Case 1 Failed: Zero register has a non-zero value.");
   end
 
 
@@ -269,7 +265,7 @@ output reg		Clk
   
   if((ReadData1 != 0) || (ReadData2 != 0)) begin
     dutpassed = 0;
-    $display("Type 4 Test Case 2 Failed");
+    $display("Type 4 Test Case 2 Failed: Zero register has a non-zero value");
   end
 
   // Test Case 3:
@@ -279,17 +275,8 @@ output reg		Clk
   
   if((ReadData1 != 0) || (ReadData2 != 0)) begin
     dutpassed = 0;
-    $display("Type 4 Test Case 3 Failed");
+    $display("Type 4 Test Case 3 Failed: Zero register has a non-zero value");
   end
-
-
-  // 5. Port 2 is broken and always reads register 14 (for example).
-
-  // Test Case 1:
-  //   
-
-
-
 
 
   // All done!  Wait a moment and signal test completion.
