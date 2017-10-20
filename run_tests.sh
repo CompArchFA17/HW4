@@ -1,8 +1,13 @@
 #!/bin/bash
-# Run the test scripts for the register file
+# Compile and run the test modules for the register file.
 
-make && 
+echo "building tests..."
+make &&
+echo "running register unit tests..." &&
 ./register_test &&
+echo "running multiplexer unit tests..." &&
 ./mux_test &&
+echo "running decoder unit tests..." &&
 ./decoder_test &&
-./regfile_test
+echo "running regfile test bench..." &&
+./regfile_test &&
