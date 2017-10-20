@@ -23,7 +23,7 @@ input		Clk		// Clock (Positive Edge Triggered)
   wire[31:0] wrenable; 
   decoder1to32 decode(wrenable, RegWrite, WriteRegister);
   wire[31:0] regOutputs[31:0];
-  register32zero registerZero(regOutputs[0], WriteData, wrenable[0], Clk); //Set first register to all 0's
+  register32zero registerZero(regOutputs[0], WriteData, wrenable[0], Clk); // Set first register to all 0's
 
   generate
     genvar i;

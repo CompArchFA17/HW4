@@ -3,6 +3,8 @@
 // or broken register files, and verifying that it correctly identifies each
 //------------------------------------------------------------------------------
 
+`include "regfile.v"
+
 module hw4testbenchharness();
 
   wire[31:0]	ReadData1;	// Data from first register read
@@ -107,25 +109,47 @@ output reg		Clk
     dutpassed = 1;
     #10
 
-  // Test Case 1: 
-  //   Write '42' to register 2, verify with Read Ports 1 and 2
-  //   (Passes because example register file is hardwired to return 42)
-  WriteRegister = 5'd2;
-  WriteData = 32'd42;
-  RegWrite = 1;
-  ReadRegister1 = 5'd2;
-  ReadRegister2 = 5'd2;
-  #5 Clk=1; #5 Clk=0;	// Generate single clock pulse
+  // // Test Case 1: 
+  // //   Write '42' to register 2, verify with Read Ports 1 and 2
+  // //   (Passes because example register file is hardwired to return 42)
+  // WriteRegister = 5'd2;
+  // WriteData = 32'd42;
+  // RegWrite = 1;
+  // ReadRegister1 = 5'd2;
+  // ReadRegister2 = 5'd2;
+  // #5 Clk=1; #5 Clk=0;	// Generate single clock pulse
 
-  // Verify expectations and report test result
-  if((ReadData1 != 42) || (ReadData2 != 42)) begin
-    dutpassed = 0;	// Set to 'false' on failure
-    $display("Test Case 1 Failed");
-  end
+  // // Verify expectations and report test result
+  // if((ReadData1 != 42) || (ReadData2 != 42)) begin
+  //   dutpassed = 0;	// Set to 'false' on failure
+  //   $display("Test Case 1 Failed");
+  // end
+  // else
+  //   $display("Test Case 1 Passed");
+  // end
 
-  // Test Case 2: 
-  //   Write '15' to register 2, verify with Read Ports 1 and 2
-  //   (Fails with example register file, but should pass with yours)
+
+  // // Test Case 2: 
+  // //   Write '15' to register 2, verify with Read Ports 1 and 2
+  // //   (Fails with example register file, but should pass with yours)
+  // WriteRegister = 5'd2;
+  // WriteData = 32'd15;
+  // RegWrite = 1;
+  // ReadRegister1 = 5'd2;
+  // ReadRegister2 = 5'd2;
+  // #5 Clk=1; #5 Clk=0;
+
+  // if((ReadData1 != 15) || (ReadData2 != 15)) begin
+  //   dutpassed = 0;
+  //   $display("Test Case 2 Failed");
+  // end
+
+
+  // Test Case Deliverable 8 #2: 
+  // This test case should make sure that Write Enable is not
+  // broken / ignored
+  // Write '15' to register 2, then attempt to write '16' to 
+  // register 2 when RegWrite=0 
   WriteRegister = 5'd2;
   WriteData = 32'd15;
   RegWrite = 1;
@@ -135,9 +159,27 @@ output reg		Clk
 
   if((ReadData1 != 15) || (ReadData2 != 15)) begin
     dutpassed = 0;
-    $display("Test Case 2 Failed");
+    $display("Test Case 8.2(1) Failed");
   end
 
+  WriteRegister = 5'd2;
+  WriteData = 32'd16;
+  RegWrite = 0;
+  ReadRegister1 = 5'd2;
+  ReadRegister2 = 5'd2;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == 16) || (ReadData2 == 16)) begin
+    dutpassed = 0;
+    $display("Test Case 8.2(2) Failed");
+  end
+  else begin
+    $display("Test Case 8.2(2) Passed");
+  end
+
+
+
+  
 
   // All done!  Wait a moment and signal test completion.
   #5
