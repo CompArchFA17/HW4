@@ -118,7 +118,7 @@ output reg		Clk
   #5 Clk=1; #5 Clk=0;	// Generate single clock pulse
 
   // Verify expectations and report test result
-  if((ReadData1 != 42) || (ReadData2 != 42)) begin
+  if((ReadData1 !== 42) || (ReadData2 !== 42)) begin
     dutpassed = 0;	// Set to 'false' on failure
     $display("Test Case 1 Failed");
   end
@@ -133,7 +133,7 @@ output reg		Clk
   ReadRegister2 = 5'd2;
   #5 Clk=1; #5 Clk=0;
 
-  if((ReadData1 != 15) || (ReadData2 != 15)) begin
+  if((ReadData1 !== 15) || (ReadData2 !== 15)) begin
     dutpassed = 0;
     $display("Test Case 2 Failed");
   end
