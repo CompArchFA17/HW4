@@ -5,6 +5,8 @@
 //   2 asynchronous read ports
 //   1 synchronous, positive edge triggered write port
 //------------------------------------------------------------------------------
+`include "decoders.v"
+`include "register.v"
 
 module regfile
 (
@@ -21,7 +23,42 @@ input		Clk		// Clock (Positive Edge Triggered)
   // These two lines are clearly wrong.  They are included to showcase how the 
   // test harness works. Delete them after you understand the testing process, 
   // and replace them with your actual code.
-  assign ReadData1 = 42;
-  assign ReadData2 = 42;
+  
+  wire[31:0] wrenable; // Enable writing of each register
+  wire[31:0] regout[31:0];
+
+  decoder1to32 decoder(
+  	.out(wrenable),
+  	.enable(RegWrite), 
+  	.address(WriteRegister)
+  );
+
+  register32zero zero_register(regout[0], WriteData, wrenable[0], Clk);
+  generate
+  	genvar i;
+  	for (i=1; i<32; i=i+1) begin: generate_register
+  		register32 register32bit(
+  			.q(regout[i]),
+  			.d(WriteData),
+  			.wrenable(wrenable[i]),
+  			.clk(Clk)
+  		);
+  	end
+  endgenerate
+
+  mux32to1by32 mux1(ReadData1, ReadRegister1,
+  	regout[0], regout[1], regout[2], regout[3], regout[4], regout[5], regout[6], regout[7], regout[8], regout[9], 
+	regout[10], regout[11], regout[12], regout[13], regout[14], regout[15], regout[16], regout[17], regout[18], regout[19], 
+	regout[20], regout[21], regout[22], regout[23], regout[24], regout[25], regout[26], regout[27], regout[28], regout[29], 
+	regout[30], regout[31]
+  );
+
+  mux32to1by32 mux2(ReadData2, ReadRegister2,
+	regout[0], regout[1], regout[2], regout[3], regout[4], regout[5], regout[6], regout[7], regout[8], regout[9], 
+	regout[10], regout[11], regout[12], regout[13], regout[14], regout[15], regout[16], regout[17], regout[18], regout[19], 
+	regout[20], regout[21], regout[22], regout[23], regout[24], regout[25], regout[26], regout[27], regout[28], regout[29], 
+	regout[30], regout[31]
+ );
+
 
 endmodule
