@@ -3,6 +3,8 @@
 // or broken register files, and verifying that it correctly identifies each
 //------------------------------------------------------------------------------
 
+`include "regfile.v"
+
 module hw4testbenchharness();
 
   wire[31:0]	ReadData1;	// Data from first register read
@@ -139,6 +141,61 @@ output reg		Clk
     $display("Test Case 2 Failed");
   end
 
+  // Test Case 3:
+  // Write Enable is broken / ignored.
+  WriteRegister = 5'd2;
+  WriteData = 32'd1;
+  RegWrite = 0;
+  ReadRegister1 = 5'd2;
+  ReadRegister2 = 5'd2;
+
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == 1) || (ReadData2 == 1)) begin
+      dutpassed = 0;
+      $display("Test Case 3 Failed");
+  end
+
+  // Test Case 4:
+  // Decoder is broken.
+  WriteRegister = 5'd2;
+  WriteData = 32'd1;
+  RegWrite = 1;
+  ReadRegister1 = 5'd2;
+  ReadRegister2 = 5'd3;
+
+  #5 Clk=1; #5 Clk=0;
+  if((ReadData1 != 1) || (ReadData2 == 1)) begin
+      dutpassed = 0;
+      $display("Test Case 4 Failed");
+  end
+
+  // Test Case 5:
+  // Register Zero is actually a register.
+  WriteRegister = 5'd0;
+  WriteData = 32'd1;
+  RegWrite = 1;
+  ReadRegister1 = 5'd0;
+
+  #5 Clk=1; #5 Clk=0;
+  if (ReadData1 != 0) begin
+      dutpassed = 0;
+      $display("Test Case 5 Failed");
+  end
+
+  // Test Case 6:
+  // Port 2 is broken and always reads register 14.
+  WriteRegister = 5'd2;
+  WriteData = 32'd1;
+  RegWrite = 1;
+  #5 Clk=1; #5 Clk=0;
+  ReadRegister1 = 5'd2;
+
+  #5 Clk=1; #5 Clk=0;
+  if (ReadData1 != 1) begin
+      dutpassed = 0;
+      $display("Test Case 6 Failed");
+  end
 
   // All done!  Wait a moment and signal test completion.
   #5

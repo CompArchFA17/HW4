@@ -6,6 +6,10 @@
 //   1 synchronous, positive edge triggered write port
 //------------------------------------------------------------------------------
 
+`include "decoders.v"
+`include "multiplexer.v"
+`include "register.v"
+
 module regfile
 (
 output[31:0]	ReadData1,	// Contents of first register read
@@ -21,7 +25,23 @@ input		Clk		// Clock (Positive Edge Triggered)
   // These two lines are clearly wrong.  They are included to showcase how the 
   // test harness works. Delete them after you understand the testing process, 
   // and replace them with your actual code.
-  assign ReadData1 = 42;
-  assign ReadData2 = 42;
+  //assign ReadData1 = 42;
+  //assign ReadData2 = 42;
+
+  wire[31:0] writeFinal;
+  wire[(32*32) - 1:0] registerFinal;
+
+  decoder1to32 decoder(writeFinal, RegWrite, WriteRegister);
+  register32zero register1(registerFinal[31:0], WriteData, writeFinal[0], Clk);
+
+  genvar i;
+  generate 
+  for (i = 1; i < 32; i = i + 1) begin: allRegisters
+        register32 register2(registerFinal[32 * (i + 1) - 1:32 * i], WriteData, writeFinal[i], Clk);
+  end
+  endgenerate
+    
+  mux32to1by32 mux1(ReadData1, ReadRegister1, registerFinal);
+  mux32to1by32 mux2(ReadData2, ReadRegister2, registerFinal);
 
 endmodule
