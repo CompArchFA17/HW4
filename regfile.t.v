@@ -139,7 +139,92 @@ output reg		Clk
     $display("Test Case 2 Failed");
   end
 
+  // Test Case 3: 
+  // Don't write '32' to register 2 because RegWrite is low
+  WriteRegister = 5'd2;
+  WriteData = 32'd32;
+  RegWrite = 0;
+  ReadRegister1 = 5'd2;
+  ReadRegister2 = 5'd2;
+  #5 Clk=1; #5 Clk=0;
 
+  if((ReadData1 != 15) || (ReadData2 != 15)) begin
+    dutpassed = 0;
+    $display("Test Case 3 Failed");
+  end
+  
+  // Test Case 4: 
+  // Write to register two, but read from register one and 29. Check to make sure the 
+  // register one input output isn't equal to the register two write value
+  WriteRegister = 5'd2;
+  WriteData = 32'd40;
+  RegWrite = 1;
+  ReadRegister1 = 5'd1;
+  ReadRegister2 = 5'd29;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == 40) || (ReadData2 == 40)) begin
+    dutpassed = 0;
+    $display("Test Case 4 Failed");
+  end
+  
+  // Test Case 5: 
+  // Write to register two, but read from register zero. Check to make sure the 
+  // register zero output is zero.
+  WriteRegister = 5'd2;
+  WriteData = 32'd41;
+  RegWrite = 1;
+  ReadRegister1 = 5'd2;
+  ReadRegister2 = 5'd0;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 != 41) || (ReadData2 != 0)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+  
+  // Test Case 6: 
+  // Test register one
+  WriteRegister = 5'd1;
+  WriteData = 32'd1;
+  RegWrite = 1;
+  ReadRegister1 = 5'd1;
+  ReadRegister2 = 5'd28;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 != 1) || (ReadData2 == 1)) begin
+    dutpassed = 0;
+    $display("Test Case 6 Failed");
+  end
+  
+  // Test Case 7: 
+  // Test register three
+  WriteRegister = 5'd3;
+  WriteData = 32'd3;
+  RegWrite = 1;
+  ReadRegister1 = 5'd3;
+  ReadRegister2 = 5'd4;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 != 3) || (ReadData2 == 3)) begin
+    dutpassed = 0;
+    $display("Test Case 7 Failed");
+  end
+  
+  // Test Case 8: 
+  // Test register four
+  WriteRegister = 5'd4;
+  WriteData = 32'd4;
+  RegWrite = 1;
+  ReadRegister1 = 5'd4;
+  ReadRegister2 = 5'd5;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 != 4) || (ReadData2 == 4)) begin
+    dutpassed = 0;
+    $display("Test Case 8 Failed");
+  end
+  
   // All done!  Wait a moment and signal test completion.
   #5
   endtest = 1;
