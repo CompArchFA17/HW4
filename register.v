@@ -15,3 +15,37 @@ input		clk
     end
 
 endmodule
+
+
+// 32-bit D Flip Flop Register with Enable
+// Positive edfe triggered
+module register32
+(
+output reg [31:0] q,
+input [31:0] d,
+input wrenable,
+input clk
+);
+
+	always @(posedge clk) begin
+		if(wrenable) begin
+			q[31:0]=d[31:0];
+		end
+	end
+endmodule
+
+
+
+// 32-bit Register that always outputs 0
+// register does not have write capability
+module register32zero
+(
+output reg [31:0] q,
+input [31:0] d,
+input wrenable,
+input clk
+);
+	always @(posedge clk) begin
+		q = 32'b0;
+	end
+endmodule

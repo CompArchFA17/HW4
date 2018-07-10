@@ -2,6 +2,7 @@
 // Test harness validates hw4testbench by connecting it to various functional 
 // or broken register files, and verifying that it correctly identifies each
 //------------------------------------------------------------------------------
+`include "regfile.v"
 
 module hw4testbenchharness();
 
@@ -139,6 +140,77 @@ output reg		Clk
     $display("Test Case 2 Failed");
   end
 
+  // Test Case 3: 
+  //  Write a few values to different registers without setting write enable high
+  //  Testing to see if Write Enable is broken or ignored
+
+  // Test Case 3a
+  WriteRegister = 5'd2;
+  WriteData = 32'd8;
+  RegWrite = 0;
+  ReadRegister1 = 5'd2;
+  ReadRegister2 = 5'd2;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == 8) || (ReadData2 == 8)) begin
+    dutpassed = 0;
+    $display("Test Case 3a Failed");
+  end
+
+  // Test Case 3b
+  WriteRegister = 5'd3;
+  WriteData = 32'd13;
+  RegWrite = 0;
+  ReadRegister1 = 5'd3;
+  ReadRegister2 = 5'd3;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == 13) || (ReadData2 == 13)) begin
+    dutpassed = 0;
+    $display("Test Case 3b Failed");
+  end
+
+
+  // Test Case 4 - verify that Register Zero is constant 0 and not a register
+  // Works by trying to write to it and then reading to see if still holds 0
+  WriteRegister = 5'd0;
+  WriteData = 32'd8;
+  RegWrite = 1;
+  ReadRegister1 = 5'd0;
+  ReadRegister2 = 5'd0;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 != 0) || (ReadData2 != 0)) begin
+    dutpassed = 0;
+    $display("Test Case 4 Failed");
+  end
+
+
+  // Test Case 5 - verify that write decoder is functioning properly
+  WriteRegister = 5'd1;
+  WriteData = 32'd8;
+  RegWrite = 1;
+  ReadRegister1 = 5'd1;
+  ReadRegister2 = 5'd1;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 != 8) || (ReadData2 != 8)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+  WriteRegister = 5'd2;
+  WriteData = 32'd11;
+  RegWrite = 1;
+  ReadRegister1 = 5'd1;
+  ReadRegister2 = 5'd2;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 != 8) || (ReadData2 != 11)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+  // Fully Perfect Register File - dutpassed = true
 
   // All done!  Wait a moment and signal test completion.
   #5
