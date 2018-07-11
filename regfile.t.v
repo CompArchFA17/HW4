@@ -1,3 +1,4 @@
+`include "regfile.v"
 //------------------------------------------------------------------------------
 // Test harness validates hw4testbench by connecting it to various functional 
 // or broken register files, and verifying that it correctly identifies each
@@ -139,6 +140,132 @@ output reg		Clk
     $display("Test Case 2 Failed");
   end
 
+  // Test Case 3:
+  //    Write the original WriteData value + 32'd1 (to get something different)
+  //    Make RegWrite = 0, verify with Read Ports 1 and 2
+  //    Check if output changes
+  WriteRegister = 5'd2;
+  WriteData = WriteData + 32'd1; // Getting a different value for WriteData
+  RegWrite = 0;
+  ReadRegister1 = 5'd2;
+  ReadRegister2 = 5'd2;
+  #5 Clk = 1; #5 Clk = 0; // generating a single clock pulse
+
+  // Verify expectations and report test result
+  if ((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 3 Failed %d %d", ReadData1, ReadData2);
+  end
+
+  // Test Case 4:
+  //    Using ReadRegister1 and ReadRegister2 to
+  //    Check if the data is written into register 2
+  WriteRegister = 5'd2;
+  WriteData = 32'd42;
+  RegWrite = 1;
+  // Purposefully looking at different register addresses 
+  // to ensure WriteData isn't being written somewhere else
+  ReadRegister1 = 5'd2;
+  ReadRegister2 = 5'd2;
+  #5 Clk=1; #5 Clk=0; // Generate single clock pulse
+
+  // First check if the the right address is written to:
+  if((ReadData1 != WriteData) || (ReadData2 != WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 4 pt.1 Failed");
+  end
+
+  // Purposefully looking at different register addresses 
+  // to ensure WriteData isn't being written somewhere else
+  ReadRegister1 = 5'd1;
+  ReadRegister2 = 5'd3;
+
+  // Verify expectations and report test result
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 4 pt. 2 Failed");
+  end
+
+
+  // Test Case 5
+  // Look specifically at address 0 and make sure output is all zeroes
+  // Try to write '15' into address zero. Check if ReadData1 and ReadData2 are zero
+  WriteRegister = 5'b0;
+  WriteData = 32'd15;
+  RegWrite = 1;
+  ReadRegister1 = 5'b0;
+  ReadRegister2 = 5'b0;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 pt. 1 Failed");
+  end
+
+  if((ReadData1 != 5'b0) || (ReadData2 != 5'b0)) begin
+    dutpassed = 0;
+    $display("Test Case 5 pt. 2 Failed");
+  end
+
+  // Test Case 6
+  // Making sure the decoder's ports always read the right register
+  // Make sure WriteRegister and ReadRegister1 and ReadRegister2 are the same
+  WriteRegister = 5'd1;
+  WriteData = 32'd15;
+  RegWrite = 1;
+  ReadRegister1 = WriteRegister;
+  ReadRegister2 = WriteRegister;
+  #5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 != WriteData) || (ReadData2 != WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 6 pt. 1 Failed %d %d %d", ReadData1, ReadData2, WriteRegister);
+  end
+
+  WriteRegister = 5'd2;
+  ReadRegister1 = WriteRegister;
+  ReadRegister2 = WriteRegister;
+  #5 Clk=1; #5 Clk=0;
+  if((ReadData1 != WriteData) || (ReadData2 != WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 6 pt. 2 Failed %d %d %d", ReadData1, ReadData2, WriteRegister);
+  end
+
+  WriteRegister = 5'd3;
+  ReadRegister1 = WriteRegister;
+  ReadRegister2 = WriteRegister;
+  #5 Clk=1; #5 Clk=0;
+  if((ReadData1 != WriteData) || (ReadData2 != WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 6 pt. 3 Failed %d %d %d", ReadData1, ReadData2, WriteRegister);
+  end
+
+  WriteRegister = 5'd4;
+  ReadRegister1 = WriteRegister;
+  ReadRegister2 = WriteRegister;
+  #5 Clk=1; #5 Clk=0;
+  if((ReadData1 != WriteData) || (ReadData2 != WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 6 pt. 4 Failed %d %d %d", ReadData1, ReadData2, WriteRegister);
+  end
+
+  WriteRegister = 5'd5;
+  ReadRegister1 = WriteRegister;
+  ReadRegister2 = WriteRegister;
+  #5 Clk=1; #5 Clk=0;
+  if((ReadData1 != WriteData) || (ReadData2 != WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 6 pt. 5 Failed %d %d %d", ReadData1, ReadData2, WriteRegister);
+  end
+
+  WriteRegister = 5'd6;
+  ReadRegister1 = WriteRegister;
+  ReadRegister2 = WriteRegister;
+  #5 Clk=1; #5 Clk=0;
+  if((ReadData1 != WriteData) || (ReadData2 != WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 6 pt. 6 Failed %d %d %d", ReadData1, ReadData2, WriteRegister);
+  end
 
   // All done!  Wait a moment and signal test completion.
   #5
