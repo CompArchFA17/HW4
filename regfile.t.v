@@ -3,6 +3,8 @@
 // or broken register files, and verifying that it correctly identifies each
 //------------------------------------------------------------------------------
 
+`include "regfile.v"
+
 module hw4testbenchharness();
 
   wire[31:0]	ReadData1;	// Data from first register read
@@ -111,6 +113,7 @@ output reg		Clk
   // Test Case 1: 
   //   Write '42' to register 2, verify with Read Ports 1 and 2
   //   (Passes because example register file is hardwired to return 42)
+/*
   WriteRegister = 5'd2;
   WriteData = 32'd42;
   RegWrite = 1;
@@ -138,6 +141,94 @@ output reg		Clk
     dutpassed = 0;
     $display("Test Case 2 Failed");
   end
+*/
+
+// Test Case 3: RegWrite is broken, Register is always written to
+// Write '9' to register 5, and RegWrite is on (confirm is working)
+	WriteRegister = 5'd5;
+	WriteData = 32'd9;
+	RegWrite = 1;
+	ReadRegister1 = 5'd5;
+	ReadRegister2 = 5'd5;
+  #5 Clk=1; #5 Clk=0;
+  if((ReadData1 != WriteData) || (ReadData2 != 9)) begin
+    dutpassed = 0;
+    $display("Test Case 3 Failed");
+  end
+
+// then see if, when regwrite is off, will the value still get transferred to readregister
+	WriteRegister = 5'd10;
+	WriteData = 32'd12;
+	RegWrite = 0;
+	ReadRegister1 = 5'd10;
+	ReadRegister2 = 5'd10;
+  #5 Clk=1; #5 Clk=0;
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 3 Failed");
+  end
+
+// Test Case 4: Decoder is broken. All registers are written to.
+// set one register correctly. then, write a different value to a different register. if both registers are now set to the new value, your decoder is broken.
+
+	WriteRegister = 5'd2;
+	WriteData = 32'd22;
+	RegWrite = 1;
+	ReadRegister1 = 5'd2;
+  #5 Clk=1; #5 Clk=0;
+  if(ReadData1 == WriteData)begin
+    dutpassed = 0;
+    $display("Test Case 4 Failed");
+  end
+
+	WriteRegister = 5'd3;
+	WriteData = 32'd23;
+	RegWrite = 1;
+	ReadRegister2 = 5'd3;
+  #5 Clk=1; #5 Clk=0;
+  if(ReadData1 == ReadData2)begin
+    dutpassed = 0;
+    $display("Test Case 4 Failed");
+  end
+
+
+//Test Case 5: Register Zero returns something other than zero
+	WriteRegister = 5'd0;
+	WriteData = 32'd22;
+	RegWrite = 1;
+	ReadRegister1 = 5'd0;
+  #5 Clk=1; #5 Clk=0;
+  if((ReadData1 != 0))begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+// Test Case 6: Ports 1 or 2 are broken and don't switch which register they read
+	WriteRegister = 5'd5;
+	WriteData = 32'd22;
+	RegWrite = 1;
+	ReadRegister1 = 5'd5;
+  #5 Clk=1; #5 Clk=0;
+  if((ReadRegister1 != WriteRegister))begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+	WriteRegister = 5'd6;
+	WriteData = 32'd22;
+	RegWrite = 1;
+	ReadRegister2 = 5'd6;
+  #5 Clk=1; #5 Clk=0;
+  if((ReadRegister2 != WriteRegister))begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+
+// Test Case Final: Return true if everything works
+if (dutpassed == 1) begin
+	$display("True");
+end
 
 
   // All done!  Wait a moment and signal test completion.
