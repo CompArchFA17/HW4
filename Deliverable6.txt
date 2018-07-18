@@ -1,0 +1,4 @@
+The following line is the significant part of the file:
+	assign out = enable<<address; 
+The "<<" in this line is a left shift operator. In this case, it shifts "enable" a number of bits to the left given by "address". The enable value is one bit and designed to enable a register at a specific address when it is high. Therefore, if enable=1'b1 and address is 5'b11111, the output will be out=32'b10000000000000000000000000000000. In other words, this shifts the high enable signal 31 positions to the 32nd bit of the output, indicating that the 32nd register should be written to. 
+ 
