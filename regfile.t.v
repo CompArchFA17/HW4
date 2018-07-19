@@ -1,3 +1,4 @@
+`include "regfile.v"
 //------------------------------------------------------------------------------
 // Test harness validates hw4testbench by connecting it to various functional 
 // or broken register files, and verifying that it correctly identifies each
@@ -138,6 +139,77 @@ output reg		Clk
     dutpassed = 0;
     $display("Test Case 2 Failed");
   end
+
+  // Test Case 3:
+  // Write 10 to register 2, Write '5' to register 2 with write enable low, verify value is still 10
+     WriteRegister = 5'd2;
+     WriteData = 32'd10;
+     RegWrite = 1;
+     #5 Clk=1; #5 Clk=0;
+     ReadRegister1 = 5'd2;
+     RegWrite = 0;
+     WriteData = 32'd5;
+     #5 Clk=1; #5 Clk=0;
+
+     if(ReadData1 != 10) begin
+	dutpassed = 0;
+	$display("Test Case 3 Failed");
+     end
+
+  // Test Case 4:
+  // Write 10 to register 2, Write '5' to register 3, verify value is still 10
+     WriteRegister = 5'd2;
+     WriteData = 32'd10;
+     RegWrite = 1;
+     #5 Clk=1; #5 Clk=0;
+     WriteRegister = 5'd3;
+     ReadRegister1 = 5'd2;
+     WriteData = 32'd5;
+     #5 Clk=1; #5 Clk=0;
+
+     if(ReadData1 != 10) begin
+	dutpassed = 0;
+	$display("Test Case 4 Failed");
+     end
+
+  // Test Case 5:
+  // Write 10 to register 0, verify value is still 0
+     WriteRegister = 5'd0;
+     WriteData = 32'd10;
+     RegWrite = 1;
+     ReadRegister1 = 5'd0;
+     #5 Clk=1; #5 Clk=0;
+
+     if(ReadData1 != 0) begin
+	dutpassed = 0;
+	$display("Test Case 5 Failed");
+     end
+
+  // Test Case 6:
+  // Write 10 to register 2, verify with both reads, Write '5' to register 3, verify with both reads
+     WriteRegister = 5'd2;
+     WriteData = 32'd10;
+     RegWrite = 1;
+     ReadRegister1 = 5'd2;
+     ReadRegister2 = 5'd2;
+     #5 Clk=1; #5 Clk=0;
+     
+     if(ReadData1 != ReadData2) begin
+	dutpassed = 0;
+	$display("Test Case 6 Failed");
+     end
+
+     WriteRegister = 5'd3;
+     ReadRegister1 = 5'd3;
+     ReadRegister2 = 5'd3;
+     RegWrite = 1;
+     WriteData = 32'd5;
+     #5 Clk=1; #5 Clk=0;
+
+     if(ReadData1 != ReadData2) begin
+	dutpassed = 0;
+	$display("Test Case 6 Failed");
+     end
 
 
   // All done!  Wait a moment and signal test completion.
