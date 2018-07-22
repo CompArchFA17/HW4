@@ -3,6 +3,7 @@
 // or broken register files, and verifying that it correctly identifies each
 //------------------------------------------------------------------------------
 
+`include "regfile.v"
 module hw4testbenchharness();
 
   wire[31:0]	ReadData1;	// Data from first register read
@@ -36,6 +37,7 @@ module hw4testbenchharness();
   (
     .begintest(begintest),
     .endtest(endtest), 
+
     .dutpassed(dutpassed),
     .ReadData1(ReadData1),
     .ReadData2(ReadData2),
@@ -108,14 +110,14 @@ output reg		Clk
     dutpassed = 1;
     #10
 
+
   // Test Case 1: 
   //   Write '42' to register 2, verify with Read Ports 1 and 2
-  //   (Passes because example register file is hardwired to return 42)
-  WriteRegister = 5'd2;
+  WriteRegister = 5'd1;
   WriteData = 32'd42;
   RegWrite = 1;
-  ReadRegister1 = 5'd2;
-  ReadRegister2 = 5'd2;
+  ReadRegister1 = 5'd1;
+  ReadRegister2 = 5'd1;
   #5 Clk=1; #5 Clk=0;	// Generate single clock pulse
 
   // Verify expectations and report test result
@@ -126,17 +128,274 @@ output reg		Clk
 
   // Test Case 2: 
   //   Write '15' to register 2, verify with Read Ports 1 and 2
-  //   (Fails with example register file, but should pass with yours)
-  WriteRegister = 5'd2;
+  WriteRegister = 5'd1;
   WriteData = 32'd15;
   RegWrite = 1;
-  ReadRegister1 = 5'd2;
-  ReadRegister2 = 5'd2;
+  ReadRegister1 = 5'd1;
+  ReadRegister2 = 5'd1;
   #5 Clk=1; #5 Clk=0;
 
   if((ReadData1 !== 15) || (ReadData2 !== 15)) begin
     dutpassed = 0;
     $display("Test Case 2 Failed");
+  end
+
+//Test Case 3: Check Register Zero
+//Write to Register Zero with a value, and check it is zero and if it is a register 
+WriteRegister =  5'd0;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd0;
+ReadRegister2 = 5'd0;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 != 32'b0)) begin
+    dutpassed = 0;
+    $display("Test Case 3 Failed");
+  end
+
+
+//Test Case 4: Check Enable
+// Write '15' to register 2, verify with Read Ports 1 and 2 on 2 different registers that there have been no changes
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 0;
+ReadRegister1 = 5'd2;
+ReadRegister2 = 5'd20;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 != 0) || (ReadData2 != 0)) begin
+    dutpassed = 0;
+    $display("Test Case 4 Failed");
+  end
+
+
+//Test Case 5: Check Decoder
+// Write '15' to register 2, verify that register 2 is correct, and check that the other registers haven't been written to (exaustively)
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd1;
+ReadRegister2 = 5'd1;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 != WriteData) || (ReadData2 != WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd2;
+ReadRegister2 = 5'd3;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd4;
+ReadRegister2 = 5'd5;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd6;
+ReadRegister2 = 5'd7;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd8;
+ReadRegister2 = 5'd9;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+  
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd10;
+ReadRegister2 = 5'd11;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd12;
+ReadRegister2 = 5'd13;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd10;
+ReadRegister2 = 5'd11;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd12;
+ReadRegister2 = 5'd13;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd14;
+ReadRegister2 = 5'd15;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd16;
+ReadRegister2 = 5'd17;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd18;
+ReadRegister2 = 5'd19;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd20;
+ReadRegister2 = 5'd21;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd22;
+ReadRegister2 = 5'd23;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd24;
+ReadRegister2 = 5'd25;
+#5 Clk=1; #5 Clk=0;
+
+   if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd26;
+ReadRegister2 = 5'd27;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd27;
+ReadRegister2 = 5'd28;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd29;
+ReadRegister2 = 5'd30;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
+  end
+
+WriteRegister = 5'd1;
+WriteData = 32'd15;
+RegWrite = 1;
+ReadRegister1 = 5'd31;
+ReadRegister2 = 5'd31;
+#5 Clk=1; #5 Clk=0;
+
+  if((ReadData1 == WriteData) || (ReadData2 == WriteData)) begin
+    dutpassed = 0;
+    $display("Test Case 5 Failed");
   end
 
 
